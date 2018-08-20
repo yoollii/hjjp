@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kingwant.hjjp.mapper.PropertyconfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="kingwant.hjjp.entity.Propertyconfig">
+        <id column="id" property="id" />
+        <result column="dataMap" property="dataMap" />
+        <result column="inConfig" property="inConfig" />
+        <result column="outConfig" property="outConfig" />
+        <result column="serId" property="serId" />
+        <result column="modelId" property="modelId" />
+        <result column="flowId" property="flowId" />
+        <result column="taskId" property="taskId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dataMap, inConfig, outConfig, serId, modelId, flowId, taskId
+    </sql>
+
+</mapper>

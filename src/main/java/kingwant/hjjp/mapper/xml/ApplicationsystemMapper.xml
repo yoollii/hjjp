@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kingwant.hjjp.mapper.ApplicationsystemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="kingwant.hjjp.entity.Applicationsystem">
+        <id column="id" property="id" />
+        <result column="mane" property="mane" />
+        <result column="useFlag" property="useFlag" />
+        <result column="des" property="des" />
+        <result column="baseUrl" property="baseUrl" />
+        <result column="modelId" property="modelId" />
+        <result column="state" property="state" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, mane, useFlag, des, baseUrl, modelId, state
+    </sql>
+
+</mapper>
