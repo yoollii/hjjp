@@ -20,7 +20,7 @@ public class User extends Model<User> {
     private String id;
     private String name;
     private Integer state;
-    private String group;
+    private String groupName;
 
 
     public String getId() {
@@ -47,12 +47,12 @@ public class User extends Model<User> {
         this.state = state;
     }
 
-    public String getGroup() {
-        return group;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class User extends Model<User> {
         "id=" + id +
         ", name=" + name +
         ", state=" + state +
-        ", group=" + group +
+        ", groupName=" + groupName +
         "}";
     }
 }

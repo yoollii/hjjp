@@ -97,7 +97,15 @@ public enum PublicResultConstant {
     /**
      * 用户不能收自己的师傅为徒
      */
-    INVALID_MASTERTOFOLLOWER_ERROR("5007","您不能收自己的师傅为徒")
+    INVALID_MASTERTOFOLLOWER_ERROR("5007","您不能收自己的师傅为徒"),
+    /**
+     * 缺少关键参数
+     */
+    MiSSING_KEY_PARAMETERS_ERROR("5008","缺少关键参数"),
+    /**
+     * 操作数据库失败
+     */
+    SQL_EXCEPTION("5009","操作数据库失败")
     ;
     
     
