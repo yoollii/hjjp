@@ -18,7 +18,7 @@ public class Applicationsystem extends Model<Applicationsystem> {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private String mane;
+    private String name;
     private Integer useFlag;
     private String des;
     private String baseUrl;
@@ -34,12 +34,12 @@ public class Applicationsystem extends Model<Applicationsystem> {
         this.id = id;
     }
 
-    public String getMane() {
-        return mane;
+    public String getName() {
+        return name;
     }
 
-    public void setMane(String mane) {
-        this.mane = mane;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getUseFlag() {
@@ -91,7 +91,7 @@ public class Applicationsystem extends Model<Applicationsystem> {
     public String toString() {
         return "Applicationsystem{" +
         "id=" + id +
-        ", mane=" + mane +
+        ", name=" + name +
         ", useFlag=" + useFlag +
         ", des=" + des +
         ", baseUrl=" + baseUrl +
