@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 import io.swagger.annotations.ApiOperation;
@@ -22,9 +21,7 @@ import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.entity.Propertyconfig;
-import kingwant.hjjp.entity.User;
 import kingwant.hjjp.mapper.PropertyconfigMapper;
-import kingwant.hjjp.mapper.UserMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
 

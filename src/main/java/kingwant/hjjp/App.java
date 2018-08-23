@@ -21,8 +21,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableCaching
 public class App 
 {
-    public static void main( String[] args )
-    {
-		SpringApplication.run(App.class, args);
+    public static void main( String[] args ){
+    	if (AuthConfigFactory.getFactory() == null) {
+            AuthConfigFactory.setFactory(new AuthConfigFactoryImpl());
+        }
+    	SpringApplication.run(App.class, args);
+		//SpringApplication.run(App.class, args);
     }
 }

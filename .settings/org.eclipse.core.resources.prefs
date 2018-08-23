@@ -3,6 +3,7 @@ encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
 encoding//src/main/resources/application.properties=UTF-8
 encoding//src/main/resources/config/aliyun.properties=UTF-8
+encoding//src/main/resources/config/application-dev.properties=UTF-8
 encoding//src/main/resources/config/application-prod.properties=UTF-8
 encoding//src/main/resources/config/constant.properties=UTF-8
 encoding//src/main/resources/config/redis.properties=UTF-8
