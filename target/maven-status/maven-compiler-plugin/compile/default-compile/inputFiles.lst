@@ -1,6 +1,8 @@
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\activity\Activity2Controller.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\UserroleMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\User.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\exception\ParamJsonException.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\CorsConfig.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\RoleMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Powers.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\PublicResultConstant.java
@@ -21,12 +23,14 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\IUserroleService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\aspect\AspectHandler.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\IApplicationsystemService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\ApplicationsystemServiceImpl.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\CrosContext.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\PackageUtil.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\BigDecimalUtils.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Userrole.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\PowersMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\config\MpGenerator2.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\UserroleController.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\activity\ShareniuProcessEngineConfigurationConfigurer.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\IPowersService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\FlowmodelMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\PropertyconfigServiceImpl.java
