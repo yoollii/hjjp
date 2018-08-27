@@ -16,22 +16,22 @@ Date: 2018-08-23 16:58:40
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for applicationsystem£®”¶”√œµÕ≥£©
+-- Table structure for applicationsystemÂ∫îÁî®Á≥ªÁªü
 -- ----------------------------
 DROP TABLE IF EXISTS `applicationsystem`;
 CREATE TABLE `applicationsystem` (
   `id` varchar(32) NOT NULL,
   `name` varchar(32) DEFAULT NULL,
-  `useFlag` int(1) DEFAULT NULL  COMMENT '”¶”√±Í ∂',
-  `des` varchar(64) DEFAULT NULL  COMMENT ' √Ë ˆ',
-  `baseUrl` varchar(128) DEFAULT NULL COMMENT 'ª˘¥°µÿ÷∑',
-  `modelId` varchar(32) DEFAULT NULL COMMENT '∂‘”¶ƒ£–Õid',
-  `state` int(1) DEFAULT NULL COMMENT '◊¥Ã¨',
+  `useFlag` int(1) DEFAULT NULL  COMMENT 'Â∫îÁî®Ê†áËØÜ',
+  `des` varchar(64) DEFAULT NULL  COMMENT 'ÊèèËø∞',
+  `baseUrl` varchar(128) DEFAULT NULL COMMENT 'Âü∫Êú¨Âú∞ÂùÄ',
+  `modelId` varchar(32) DEFAULT NULL COMMENT 'Ê®°Âûãid',
+  `state` int(1) DEFAULT NULL COMMENT 'Áä∂ÊÄÅ',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for flowmodel£®¡˜≥Ãƒ£–Õ£©
+-- Table structure for flowmodelÊµÅÁ®ãÊ®°Âûã
 -- ----------------------------
 DROP TABLE IF EXISTS `flowmodel`;
 CREATE TABLE `flowmodel` (
@@ -45,7 +45,7 @@ CREATE TABLE `flowmodel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for powers£®»®œﬁ±Ì£©
+-- Table structure for powersÊùÉÈôêË°®
 -- ----------------------------
 DROP TABLE IF EXISTS `powers`;
 CREATE TABLE `powers` (
@@ -58,7 +58,7 @@ CREATE TABLE `powers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for propertyconfig£® Ù–‘≈‰÷√£©
+-- Table structure for propertyconfigÂ±ûÊÄßÈÖçÁΩÆ
 -- ----------------------------
 DROP TABLE IF EXISTS `propertyconfig`;
 CREATE TABLE `propertyconfig` (
@@ -68,13 +68,13 @@ CREATE TABLE `propertyconfig` (
   `outConfig` varchar(32) DEFAULT NULL,
   `serId` varchar(32) DEFAULT NULL,
   `modelId` varchar(32) DEFAULT NULL,
-  `flowId` varchar(32) DEFAULT NULL  COMMENT '¡˜≥Ãid',
-  `taskId` varchar(32) DEFAULT NULL   COMMENT 'taskid¡˜≥Ã÷– π”√',
+  `flowId` varchar(32) DEFAULT NULL  COMMENT 'ÊµÅÁ®ãid',
+  `taskId` varchar(32) DEFAULT NULL   COMMENT 'taskidÊµÅÁ®ã‰∏≠‰ºö‰ΩøÁî®',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for role£®Ω«…´£©
+-- Table structure for roleËßíËâ≤
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
@@ -85,7 +85,7 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for ser£®∑˛ŒÒ£©
+-- Table structure for serÊúçÂä°
 -- ----------------------------
 DROP TABLE IF EXISTS `ser`;
 CREATE TABLE `ser` (
@@ -100,7 +100,7 @@ CREATE TABLE `ser` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for user
+-- Table structure for userÁî®Êà∑
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -112,7 +112,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for userrole£®”√ªßΩ«…´∂‘”¶πÿœµ±Ì£©
+-- Table structure for userroleÁî®Êà∑ËßíËâ≤ÂÖ≥Á≥ª
 -- ----------------------------
 DROP TABLE IF EXISTS `userrole`;
 CREATE TABLE `userrole` (
