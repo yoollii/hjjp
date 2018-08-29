@@ -4,7 +4,6 @@ kingwant\hjjp\util\CrosContext.class
 kingwant\hjjp\util\DateTimeUtil.class
 kingwant\hjjp\base\BaseResult.class
 kingwant\hjjp\util\KwHelper.class
-kingwant\hjjp\config\MpGenerator2$1.class
 kingwant\hjjp\aspect\AspectHandler.class
 kingwant\hjjp\util\AliyunUtil.class
 kingwant\hjjp\util\GenerationSequenceUtil.class
@@ -38,9 +37,9 @@ kingwant\hjjp\controller\ApplicationsystemController.class
 kingwant\hjjp\service\IPowersService.class
 kingwant\hjjp\entity\Powers.class
 kingwant\hjjp\service\impl\RoleServiceImpl.class
+kingwant\hjjp\controller\StencilsetRestResource.class
 kingwant\hjjp\entity\Flowmodel.class
 kingwant\hjjp\service\impl\UserServiceImpl.class
-kingwant\hjjp\config\MpGenerator2$2.class
 kingwant\hjjp\util\BigDecimalUtils.class
 kingwant\hjjp\service\IUserService.class
 kingwant\hjjp\mapper\SerMapper.class
@@ -56,12 +55,14 @@ kingwant\hjjp\service\impl\FlowmodelServiceImpl.class
 kingwant\hjjp\mapper\ApplicationsystemMapper.class
 kingwant\hjjp\service\IPropertyconfigService.class
 kingwant\hjjp\base\PageMongo.class
+kingwant\hjjp\controller\ModelSaveRestResource.class
 kingwant\hjjp\service\impl\UserroleServiceImpl.class
 kingwant\hjjp\entity\Propertyconfig.class
 kingwant\hjjp\mapper\UserMapper.class
 kingwant\hjjp\service\ISerService.class
 kingwant\hjjp\service\IApplicationsystemService.class
 kingwant\hjjp\exception\ParamJsonException.class
+kingwant\hjjp\controller\ModelEditorJsonRestResource.class
 kingwant\hjjp\base\PublicResultConstant.class
 kingwant\hjjp\activity\Activity2Controller.class
 kingwant\hjjp\service\IFlowmodelService.class

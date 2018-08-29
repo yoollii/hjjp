@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
@@ -29,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author ch123
  * @since 2018-08-15
  */
+//@Api(tags = "应用系统")
 @RestController
 @RequestMapping("/applicationsystem")
 public class ApplicationsystemController {
@@ -94,9 +97,14 @@ public class ApplicationsystemController {
 		EntityWrapper<Applicationsystem> ew=new EntityWrapper<Applicationsystem>();
 	    ew.setEntity(new Applicationsystem());
 		ew.like(!KwHelper.isNullOrEmpty(applicationsystem.getName()), "name", applicationsystem.getName());
-		ew.eq(!KwHelper.isNullOrEmpty(applicationsystem.getUseFlag().toString()), "useFlag", applicationsystem.getUseFlag());
+		try {
+			ew.eq(!KwHelper.isNullOrEmpty(applicationsystem.getUseFlag().toString()), "useFlag", applicationsystem.getUseFlag());
+			ew.eq(!KwHelper.isNullOrEmpty(applicationsystem.getState().toString()), "state", applicationsystem.getState());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		ew.eq(!KwHelper.isNullOrEmpty(applicationsystem.getModelId()), "modelId", applicationsystem.getModelId());
-		ew.eq(!KwHelper.isNullOrEmpty(applicationsystem.getState().toString()), "state", applicationsystem.getState());
+		
 		
 		List<Applicationsystem> list = appliMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();

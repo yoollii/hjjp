@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Controller;
  * @since 2018-08-15
  */
 //服务
+@Api(tags = "服务")
 @RestController
 @RequestMapping("/ser")
 public class SerController {
@@ -102,9 +104,12 @@ public class SerController {
 		EntityWrapper<Ser> ew=new EntityWrapper<Ser>();
 	    ew.setEntity(new Ser());
 		ew.like(!KwHelper.isNullOrEmpty(ser.getName()), "name", ser.getName());
-		ew.eq(!KwHelper.isNullOrEmpty(ser.getUrlFlag().toString()), "useFlag", ser.getUrlFlag());
-		ew.eq(!KwHelper.isNullOrEmpty(ser.getState().toString()), "state", ser.getState());
-		
+		try {
+			ew.eq(!KwHelper.isNullOrEmpty(ser.getUrlFlag().toString()), "useFlag", ser.getUrlFlag());
+			ew.eq(!KwHelper.isNullOrEmpty(ser.getState().toString()), "state", ser.getState());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		List<Ser> list = serMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("成功", list);

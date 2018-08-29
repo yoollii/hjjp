@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
@@ -29,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author ch123
  * @since 2018-08-15
  */
+@Api(tags = "角色")
 @RestController
 @RequestMapping("/role")
 public class RoleController {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
@@ -34,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author ch123
  * @since 2018-08-15
  */
-
+@Api(tags = "用户角色关系")
 @RestController
 @RequestMapping("/userrole")
 public class UserroleController {

@@ -3,6 +3,7 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\UserroleMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\User.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\exception\ParamJsonException.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\CorsConfig.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\ModelSaveRestResource.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\RoleMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Powers.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\PublicResultConstant.java
@@ -13,6 +14,7 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\UserMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\DateTimeUtil.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\annotation\Log.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\BaseResult.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\ModelEditorJsonRestResource.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\PropertyconfigMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Ser.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\PowersServiceImpl.java
@@ -34,6 +36,7 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\activity\ShareniuProcessEngineConf
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\IPowersService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\FlowmodelMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\PropertyconfigServiceImpl.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\StencilsetRestResource.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Role.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\Constant.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\JWTUtil.java

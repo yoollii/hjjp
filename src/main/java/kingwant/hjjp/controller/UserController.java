@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 //@Controller
 //@RequestMapping("/user")
+@Api(tags = "用户")
 @RestController
 @RequestMapping("/user")
 public class UserController {

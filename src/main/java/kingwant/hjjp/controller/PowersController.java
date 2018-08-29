@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author ch123
  * @since 2018-08-15
  */
+@Api(tags = "权限列表")
 @RestController
 @RequestMapping("/powers")
 public class PowersController {

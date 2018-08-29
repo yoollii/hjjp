@@ -11,16 +11,16 @@ import java.util.jar.JarFile;
  
 public class PackageUtil {
  
-	public static void main(String[] args) throws Exception {
-		String packageName = "com.kingwant.repairman.controller";
-		// List<String> classNames = getClassName(packageName);
-		List<String> classNames = getClassNameByJar("jar:file:/E:/workspace/workspace_photon/repairman/target/repairman-0.0.1-SNAPSHOT.jar!/BOOT-INF/classes!/com/kingwant/repairman/controller", false);
-		if (classNames != null) {
-			for (String className : classNames) {
-				System.out.println(className);
-			}
-		}
-	}
+//	public static void main(String[] args) throws Exception {
+//		String packageName = "com.kingwant.repairman.controller";
+//		// List<String> classNames = getClassName(packageName);
+//		List<String> classNames = getClassNameByJar("jar:file:/E:/workspace/workspace_photon/repairman/target/repairman-0.0.1-SNAPSHOT.jar!/BOOT-INF/classes!/com/kingwant/repairman/controller", false);
+//		if (classNames != null) {
+//			for (String className : classNames) {
+//				System.out.println(className);
+//			}
+//		}
+//	}
  
 	/**
 	 * 获取某包下（包括该包的所有子包）所有类

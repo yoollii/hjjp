@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
@@ -34,6 +35,7 @@ import kingwant.hjjp.util.KwHelper;
  * @author ch123
  * @since 2018-08-15
  */
+@Api(tags = "配置属性")
 @RestController
 @RequestMapping("/propertyconfig")
 public class PropertyconfigController {

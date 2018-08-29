@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
@@ -47,7 +48,8 @@ import org.springframework.stereotype.Controller;
  * @author ch123
  * @since 2018-08-15
  */
-@Controller
+@Api(tags = "流程模板")
+@RestController
 @RequestMapping("/flowmodel")
 public class FlowmodelController {
 	
@@ -67,45 +69,45 @@ public class FlowmodelController {
 	@Autowired
 	private FlowmodelMapper flowmodelMapper;
 	
-	@RequestMapping(value = "create")
-	public String create(String name,  String key, String description,
-			HttpServletRequest request, HttpServletResponse response) throws MCHException {
-		try {
-			ObjectMapper objectMapper = new ObjectMapper();
-			ObjectNode editorNode = objectMapper.createObjectNode();
-			editorNode.put("id", "canvas");
-			editorNode.put("resourceId", "canvas");
-			ObjectNode stencilSetNode = objectMapper.createObjectNode();
-			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-			editorNode.put("stencilset", stencilSetNode);
-			Model modelData = repositoryService.newModel();
-
-			ObjectNode modelObjectNode = objectMapper.createObjectNode();
-			modelObjectNode.put("name", name);
-			modelObjectNode.put("revision", 1);
-			description = StringUtils.defaultString(description);
-			modelObjectNode.put("description", description);
-			// modelObjectNode.put("FormId", formId);
-			modelData.setMetaInfo(modelObjectNode.toString());
-			modelData.setName(name);
-			modelData.setKey(StringUtils.defaultString(key));
-
-			repositoryService.saveModel(modelData);
-			repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
-
-//			response.sendRedirect(
-//					request.getContextPath() + "modeler.html?modelId=" + modelData.getId() + "&key=" + key);
-			return "redirect:/modeler.html?modelId="+ modelData.getId() + "&key=" + key;
-
-		} catch (Exception e) {
-			throw new MCHException();
-		}
-	}
-
-	@RequestMapping("/modeler")
-	public String indexHtml() {
-	  return "modeler";
-	}
+//	@RequestMapping(value = "create")
+//	public String create(String name,  String key, String description,
+//			HttpServletRequest request, HttpServletResponse response) throws MCHException {
+//		try {
+//			ObjectMapper objectMapper = new ObjectMapper();
+//			ObjectNode editorNode = objectMapper.createObjectNode();
+//			editorNode.put("id", "canvas");
+//			editorNode.put("resourceId", "canvas");
+//			ObjectNode stencilSetNode = objectMapper.createObjectNode();
+//			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+//			editorNode.put("stencilset", stencilSetNode);
+//			Model modelData = repositoryService.newModel();
+//
+//			ObjectNode modelObjectNode = objectMapper.createObjectNode();
+//			modelObjectNode.put("name", name);
+//			modelObjectNode.put("revision", 1);
+//			description = StringUtils.defaultString(description);
+//			modelObjectNode.put("description", description);
+//			// modelObjectNode.put("FormId", formId);
+//			modelData.setMetaInfo(modelObjectNode.toString());
+//			modelData.setName(name);
+//			modelData.setKey(StringUtils.defaultString(key));
+//
+//			repositoryService.saveModel(modelData);
+//			repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+//
+////			response.sendRedirect(
+////					request.getContextPath() + "modeler.html?modelId=" + modelData.getId() + "&key=" + key);
+//			return "redirect:/modeler.html?modelId="+ modelData.getId() + "&key=" + key;
+//
+//		} catch (Exception e) {
+//			throw new MCHException();
+//		}
+//	}
+//
+//	@RequestMapping("/modeler")
+//	public String indexHtml() {
+//	  return "modeler";
+//	}
 	
 	@PostMapping("/addModel")
 	@ApiOperation(value = "添加流程模板", notes = "所需参数：name(名字);state(状态),cruser(创建者),des(描述);orders(排序)")
@@ -163,8 +165,13 @@ public class FlowmodelController {
         //参数校验
 		EntityWrapper<Flowmodel> ew=new EntityWrapper<Flowmodel>();
 	    ew.setEntity(new Flowmodel());
+	    try {
+	    	ew.eq(!KwHelper.isNullOrEmpty(flowmodel.getState().toString()), "state", flowmodel.getState());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		ew.like(!KwHelper.isNullOrEmpty(flowmodel.getName()), "name", flowmodel.getName());
-		ew.eq(!KwHelper.isNullOrEmpty(flowmodel.getState().toString()), "state", flowmodel.getState());
+		
 		ew.eq(!KwHelper.isNullOrEmpty(flowmodel.getCruser()), "cruser", flowmodel.getCruser());
 		
 		List<Flowmodel> list = flowmodelMapper.selectList(ew);        
