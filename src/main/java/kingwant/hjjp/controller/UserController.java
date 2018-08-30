@@ -44,11 +44,12 @@ public class UserController {
 	private UserMapper userMapper;
 	
 	@PostMapping("/addUser")
-	@ApiOperation(value = "添加用户", notes = "所需参数：name(名字);state(状态),group(分组名)")
-	public PublicResult<Map<String, Object>> addUser(@ValidationParam("name,state,group")@RequestBody JSONObject requestJson) {
+	@ApiOperation(value = "添加用户", notes = "所需参数：name(名字);state(状态),group(分组名),rid(角色id)")
+	public PublicResult<Map<String, Object>> addUser(@ValidationParam("name,state,group,rid")@RequestBody JSONObject requestJson) {
 		String name = requestJson.getString("name");
         int state = requestJson.getInteger("state");
-        String group = requestJson.getString("group");        
+        String group = requestJson.getString("group");  
+        String rid = requestJson.getString("rid");
         //参数校验
         if (ComUtil.isEmpty(name) || ComUtil.isEmpty(state)|| ComUtil.isEmpty(group)) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
@@ -58,6 +59,7 @@ public class UserController {
 		user.setName(name);
 		user.setState(state);
 		user.setGroupName(group);
+		user.setRid(rid);
 		userMapper.insert(user);
         
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -92,7 +94,7 @@ public class UserController {
     }
 	
 	@PostMapping("/findList")
-	@ApiOperation(value = "查找用户列表", notes = "所需可选参数：name(用户名称),state(用户状态),group(分组名称)")
+	@ApiOperation(value = "查找用户列表", notes = "所需可选参数：name(用户名称),state(用户状态),groupName(分组名称),rid(角色id)")
 	public PublicResult<Map<String, Object>> findByList(@RequestBody User user) {
         //参数校验
 		EntityWrapper<User> ew=new EntityWrapper<User>();
@@ -101,11 +103,10 @@ public class UserController {
 		try {
 			ew.where(!KwHelper.isNullOrEmpty(user.getState().toString()), "state = {0}", user.getState())
 			.andNew(!KwHelper.isNullOrEmpty(user.getGroupName()), "groupName = {0}", user.getGroupName());
-			
-			System.out.println(ew.getSqlSegment());
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		ew.eq(!KwHelper.isNullOrEmpty(user.getRid()), "rid", user.getRid());
 		List<User> list = userMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);
@@ -113,7 +114,7 @@ public class UserController {
     }
 
 	@PutMapping("/updateUser")
-	@ApiOperation(value = "修改用户", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态),group(分组名)")
+	@ApiOperation(value = "修改用户", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态),groupName(分组名),rid(角色id)")
 	public PublicResult<Map<String, Object>> updateUser(@RequestBody User user) {
 		User user4update=new User();
 		if(KwHelper.isNullOrEmpty(user.getId())) {

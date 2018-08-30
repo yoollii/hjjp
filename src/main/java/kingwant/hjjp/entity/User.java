@@ -21,9 +21,18 @@ public class User extends Model<User> {
     private String name;
     private Integer state;
     private String groupName;
+    private String rid;
 
 
-    public String getId() {
+    public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
+	}
+
+	public String getId() {
         return id;
     }
 

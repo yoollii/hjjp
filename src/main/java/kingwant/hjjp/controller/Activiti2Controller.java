@@ -16,13 +16,13 @@ import xyz.michaelch.mchtools.MCHException;
 
 @Api(tags = "Activiti控制器")
 @Controller
-@RequestMapping("/activiti")
-public class ActivitiController {
+@RequestMapping("/activiti2")
+public class Activiti2Controller {
 	
 	@Autowired
 	RepositoryService repositoryService;
 	
-	@PostMapping(value = "create")
+	@RequestMapping(value = "create")
 	public String create(String name,  String key, String description,
 			HttpServletRequest request, HttpServletResponse response) throws MCHException {
 		try {
@@ -34,7 +34,6 @@ public class ActivitiController {
 			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
 			editorNode.put("stencilset", stencilSetNode);
 			Model modelData = repositoryService.newModel();
-
 			ObjectNode modelObjectNode = objectMapper.createObjectNode();
 			modelObjectNode.put("name", name);
 			modelObjectNode.put("revision", 1);
@@ -44,11 +43,14 @@ public class ActivitiController {
 			modelData.setMetaInfo(modelObjectNode.toString());
 			modelData.setName(name);
 			modelData.setKey(StringUtils.defaultString(key));
+
 			repositoryService.saveModel(modelData);
 			repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+
 //			response.sendRedirect(
 //					request.getContextPath() + "modeler.html?modelId=" + modelData.getId() + "&key=" + key);
 			return "redirect:/modeler.html?modelId="+ modelData.getId() + "&key=" + key;
+
 		} catch (Exception e) {
 			throw new MCHException();
 		}
@@ -56,7 +58,7 @@ public class ActivitiController {
 
 	@RequestMapping("/modeler")
 	public String indexHtml() {
-	  return "modeler";
+	  return "modeler.html";
 	}
 
 }
