@@ -103,6 +103,14 @@ public enum PublicResultConstant {
      */
     MiSSING_KEY_PARAMETERS_ERROR("5008","缺少关键参数"),
     /**
+     * 已存在该角色用户关系
+     */
+    EXISTED_USER_ROLE_RELATIONSHIP("5010","已存在当前用户角色关系"),
+    /**
+     * 不已存在当前角色用户关系
+     */
+    NO_USER_ROLE_RELATIONSHIP("5010","不已存在当前用户角色关系"),
+    /**
      * 操作数据库失败
      */
     SQL_EXCEPTION("5009","操作数据库失败")

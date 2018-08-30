@@ -8,14 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.entity.Powers;
-import kingwant.hjjp.entity.User;
 import kingwant.hjjp.mapper.PowersMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
@@ -42,53 +40,44 @@ public class PowersController {
 	
 	@PostMapping("/addPower")
 	@ApiOperation(value = "添加权限", notes = "所需参数：name(名称);code(代码),weight(权重),pid(父节点id,根节点为-1)")
-	public PublicResult<Map<String, Object>> addUser(@ValidationParam("name,code,weight,pid")@RequestBody Powers powers) {
+	public PublicResult<Map<String, Object>> addPower(@ValidationParam("name,code,weight,pid")@RequestBody Powers powers) {
         //参数校验
         if (ComUtil.isEmpty(powers.getName()) || ComUtil.isEmpty(powers.getCode())|| ComUtil.isEmpty(powers.getWeight())
         		|| ComUtil.isEmpty(powers.getPid())) {
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("名称，代码，权重，父节点均不能为空", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         powers.setId(KwHelper.newID());
         powersMapper.insert(powers);
-        Map<String, Object> map=new HashMap<>();
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
 	
 	@DeleteMapping("/delPower")
 	@ApiOperation(value = "删除权限", notes = "所需参数：id(用户id)")
-	public PublicResult<Map<String, Object>> delUserById(String id) {
-		Map<String, Object> map=new HashMap<>();
+	public PublicResult<Map<String, Object>> delPower(String id) {
 		try {
 			powersMapper.deleteById(id);
-			map.put("删除成功！！", true);
 		} catch (Exception e) {
-			map.put("删除失败！！", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 			// TODO: handle exception
 		}
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 	
 	@GetMapping("/findById")
 	@ApiOperation(value = "查找权限", notes = "所需参数：id(用户id)")
 	public PublicResult<Map<String, Object>> findById( String id) {
         if (ComUtil.isEmpty(id)  ) {
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("缺少关键参数", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }        
 		Powers powers=powersMapper.selectById(id);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", powers);
+        map.put("data", powers);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
     }
 	
 	@PostMapping("/findList")
 	@ApiOperation(value = "查找权限列表", notes = "所需可选参数：name(权限名称),code(权限代码),pid(父节点id)")
-	public PublicResult<Map<String, Object>> findByList(@RequestBody Powers powers) {
+	public PublicResult<Map<String, Object>> findList(@RequestBody Powers powers) {
 		EntityWrapper<Powers> ew=new EntityWrapper<Powers>();
 	    ew.setEntity(new Powers());
 		ew.like(!KwHelper.isNullOrEmpty(powers.getName()), "name", powers.getName());
@@ -97,26 +86,22 @@ public class PowersController {
 
 		List<Powers> list = powersMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", list);
+        map.put("data", list);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
     }
 
 	@PutMapping("/updatePowers")
 	@ApiOperation(value = "修改权限", notes = "所需参数：id(必要，其他的为选填);name(名字);code(代码),weight(权重),pid(父节点id)")
-	public PublicResult<Map<String, Object>> updateUser(@RequestBody Powers powers) {
-		Map<String, Object> map=new HashMap<>();
+	public PublicResult<Map<String, Object>> updatePowers(@RequestBody Powers powers) {
 		if(KwHelper.isNullOrEmpty(powers.getId())) {
-			map.put("权限信息id不能为空", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
 		}
 		try {
 			powersMapper.updateById(powers);
 		} catch (Exception e) {
-			map.put("操作数据失败", false);
-			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, map);
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 		}
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 
 }

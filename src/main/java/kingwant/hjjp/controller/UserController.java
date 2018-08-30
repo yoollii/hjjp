@@ -51,10 +51,7 @@ public class UserController {
         String group = requestJson.getString("group");        
         //参数校验
         if (ComUtil.isEmpty(name) || ComUtil.isEmpty(state)|| ComUtil.isEmpty(group)) {
-        	Object aObject="用户名，状态，分组名不能为空";
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("用户名，状态，分组名均不能为空", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         User user=new User();
 		user.setId(KwHelper.newID());
@@ -63,41 +60,34 @@ public class UserController {
 		user.setGroupName(group);
 		userMapper.insert(user);
         
-        Map<String, Object> map=new HashMap<>();
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
 	
 	
-	@DeleteMapping("/delUserById")
+	@DeleteMapping("/delById")
 	@ApiOperation(value = "删除用户", notes = "所需参数：id(用户id)")
-	public PublicResult<Map<String, Object>> delUserById(String id) {
-		Map<String, Object> map=new HashMap<>();
+	public PublicResult<Map<String, Object>> delById(String id) {
+		if(KwHelper.isNullOrEmpty(id)) {
+			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
+		}
 		try {
 			userMapper.deleteById(id);
-			map.put("删除成功！！", true);
 		} catch (Exception e) {
-			map.put("删除失败！！", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
-			// TODO: handle exception
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 		}
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
 		
     }
 	
 	@GetMapping("/findById")
 	@ApiOperation(value = "查找用户", notes = "所需参数：id(用户id)")
 	public PublicResult<Map<String, Object>> findById( String id) {
-		//String name = requestJson.getString("name");
-		//参数校验
         if (ComUtil.isEmpty(id)  ) {
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("缺少关键参数", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }        
 		User user=userMapper.selectById(id);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", user);
+        map.put("data", user);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
     }
 	
@@ -118,7 +108,7 @@ public class UserController {
 		}
 		List<User> list = userMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", list);
+        map.put("data", list);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
     }
 
@@ -126,22 +116,16 @@ public class UserController {
 	@ApiOperation(value = "修改用户", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态),group(分组名)")
 	public PublicResult<Map<String, Object>> updateUser(@RequestBody User user) {
 		User user4update=new User();
-		Map<String, Object> map=new HashMap<>();
 		if(KwHelper.isNullOrEmpty(user.getId())) {
-			Object message=false;
-			map.put("用户信息id不能为空", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
 		}
 		try {
 			userMapper.updateById(user);
 		} catch (Exception e) {
-			map.put("操作数据失败", false);
-			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, map);
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 			// TODO: handle exception
 		}
-
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 
 }

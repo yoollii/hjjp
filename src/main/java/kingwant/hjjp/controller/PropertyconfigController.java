@@ -45,35 +45,29 @@ public class PropertyconfigController {
 	
 	@PostMapping("/addProperty")
 	@ApiOperation(value = "添加属性设置", notes = "所需参数：dateMap(流程数据映射);inConfig(输入配置);outConfig(输出配置);serId(服务id);modelId(模型id);flowId(流程id);taskId(taskId流程中需要)")
-	public PublicResult<Map<String, Object>> addUser(@ValidationParam("dateMap,inConfig,outConfig")@RequestBody Propertyconfig propertyconfig) {
+	public PublicResult<Map<String, Object>> addProperty(@ValidationParam("dateMap,inConfig,outConfig")@RequestBody Propertyconfig propertyconfig) {
         if (ComUtil.isEmpty(propertyconfig.getDataMap()) || ComUtil.isEmpty(propertyconfig.getInConfig())
         		|| ComUtil.isEmpty(propertyconfig.getOutConfig())) {
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("流程数据映射，输入配置，输出配置均不能为空", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         propertyconfig.setId(KwHelper.newID());
         propertyconfigMapper.insert(propertyconfig);
-        
-        Map<String, Object> map=new HashMap<>();
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
 	
-	
-	@DeleteMapping("/delPropertyConfigById")
+	@DeleteMapping("/delById")
 	@ApiOperation(value = "删除属性设置", notes = "所需参数：id(属性id)")
-	public PublicResult<Map<String, Object>> delPropertyConfigById(String id) {
-		Map<String, Object> map=new HashMap<>();
+	public PublicResult<Map<String, Object>> delById(String id) {
+		if (ComUtil.isEmpty(id)  ) {
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
+        }
 		try {
 			propertyconfigMapper.deleteById(id);
-			map.put("删除成功！！", true);
 		} catch (Exception e) {
-			map.put("删除失败！！", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 			// TODO: handle exception
 		}
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
 		
     }
 	
@@ -83,19 +77,17 @@ public class PropertyconfigController {
 		//String name = requestJson.getString("name");
 		//参数校验
         if (ComUtil.isEmpty(id)  ) {
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("缺少关键参数", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }        
         Propertyconfig Propertyconfig=propertyconfigMapper.selectById(id);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", Propertyconfig);
+        map.put("data", Propertyconfig);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
     }
 	
 	@PostMapping("/findList")
 	@ApiOperation(value = "查找属性设置列表", notes = "所需参数：dateMap(流程数据映射);inConfig(输入配置);outConfig(输出配置);serId(服务id);modelId(模型id);flowId(流程id);taskId(taskId流程中需要)")
-	public PublicResult<Map<String, Object>> findByList(@RequestBody Propertyconfig Propertyconfig) {
+	public PublicResult<Map<String, Object>> findList(@RequestBody Propertyconfig Propertyconfig) {
         //参数校验
 		EntityWrapper<Propertyconfig> ew=new EntityWrapper<Propertyconfig>();
 	    ew.setEntity(new Propertyconfig());
@@ -109,32 +101,22 @@ public class PropertyconfigController {
 		
 		List<Propertyconfig> list = propertyconfigMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", list);
+        map.put("data", list);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
     }
 
-	@PutMapping("/updateUser")
+	@PutMapping("/updatePropertyConfig")
 	@ApiOperation(value = "修改用户", notes = "所需参数：dateMap(流程数据映射);inConfig(输入配置);outConfig(输出配置);serId(服务id);modelId(模型id);flowId(流程id);taskId(taskId流程中需要)")
-	public PublicResult<Map<String, Object>> updateUser(@RequestBody  Propertyconfig Propertyconfig) {
-		Map<String, Object> map=new HashMap<>();
+	public PublicResult<Map<String, Object>> updatePropertyConfig(@RequestBody  Propertyconfig Propertyconfig) {
 		if(KwHelper.isNullOrEmpty(Propertyconfig.getId())) {
-			Object message=false;
-			map.put("属性设置信息id不能为空", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
 		}
 		try {
 			propertyconfigMapper.updateById(Propertyconfig);
 		} catch (Exception e) {
-			map.put("操作数据失败", false);
-			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, map);
-			// TODO: handle exception
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 		}
-
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
-
-
-
 }
 

@@ -21,6 +21,9 @@ import kingwant.hjjp.util.KwHelper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.validation.constraints.Null;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -31,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author ch123
  * @since 2018-08-15
  */
-//@Api(tags = "应用系统")
+@Api(tags = "应用系统")
 @RestController
 @RequestMapping("/applicationsystem")
 public class ApplicationsystemController {
@@ -39,39 +42,38 @@ public class ApplicationsystemController {
 	@Autowired
 	private ApplicationsystemMapper appliMapper;
 	
-	@PostMapping("/addUser")
-	@ApiOperation(value = "添加应用系统", notes = "所需参数：name(名字);userFlag(应用标识);des(描述);baseUrl(基础地址);modelId(流程模板);state(状态)")
-	public PublicResult<Map<String, Object>> addUser(@ValidationParam("name,state,group")@RequestBody Applicationsystem applicationsystem) {
+	@PostMapping("/addAppli")
+	@ApiOperation(value = "添加应用系统", notes = "所需参数：name(名字，必填);userFlag(应用标识);des(描述);baseUrl(基础地址);modelId(流程模板，必填);state(状态)")
+	public PublicResult<Map<String, Object>> addAppli(@ValidationParam("name,modelId")@RequestBody Applicationsystem applicationsystem) {
 		        
         if (ComUtil.isEmpty(applicationsystem.getName()) || ComUtil.isEmpty(applicationsystem.getModelId())||
         		ComUtil.isEmpty(applicationsystem.getState())) {
         	//Object aObject="名称，模型id，状态均不能为空";
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("名称，模型id，状态均不能为空", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+//        	Map<String, Object> map=new HashMap<>();
+//        	map.put("flag", false);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         applicationsystem.setId(KwHelper.newID());
         appliMapper.insert(applicationsystem);
         
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
 	
 	
 	@DeleteMapping("/delAppliById")
 	@ApiOperation(value = "删除应用系统", notes = "所需参数：id(应用系统id)")
-	public PublicResult<Map<String, Object>> delUserById(String id) {
+	public PublicResult<Map<String, Object>> delAppliById(String id) {
 		Map<String, Object> map=new HashMap<>();
 		try {
 			appliMapper.deleteById(id);
-			map.put("删除成功！！", true);
+			map.put("flag", true);
 		} catch (Exception e) {
-			map.put("删除失败！！", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			map.put("flag", false);
+			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
 			// TODO: handle exception
 		}
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 	
 	@GetMapping("/findById")
@@ -80,13 +82,11 @@ public class ApplicationsystemController {
 		//String name = requestJson.getString("name");
 		//参数校验
         if (ComUtil.isEmpty(id)) {
-        	Map<String, Object> map=new HashMap<>();
-        	map.put("缺少关键参数", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }        
 		Applicationsystem applicationsystem=appliMapper.selectById(id);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", applicationsystem);
+        map.put("data", applicationsystem);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
     }
 	
@@ -108,27 +108,22 @@ public class ApplicationsystemController {
 		
 		List<Applicationsystem> list = appliMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", list);
+        map.put("data", list);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
     }
 
 	@PutMapping("/updateAppli")
 	@ApiOperation(value = "修改应用系统", notes = "所需参数：id(必要，其他的为选填);name(名字);useFlag(用户标识);des(备注);baseUrl(基本地址);modelId(模型id),state(状态)")
-	public PublicResult<Map<String, Object>> updateUser(@RequestBody Applicationsystem applicationsystem) {
-		Map<String, Object> map=new HashMap<>();
+	public PublicResult<Map<String, Object>> updateAppli(@RequestBody Applicationsystem applicationsystem) {
 		if(KwHelper.isNullOrEmpty(applicationsystem.getId())) {
-			map.put("用户信息id不能为空", false);
-			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
 		}
 		try {
 			appliMapper.updateById(applicationsystem);
 		} catch (Exception e) {
-			map.put("操作数据失败", false);
-			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, map);
-			// TODO: handle exception
+			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 		}
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 }
 

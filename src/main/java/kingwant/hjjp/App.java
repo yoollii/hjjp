@@ -19,8 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @MapperScan("kingwant.hjjp.mapper")
 @EnableSwagger2
 @EnableCaching
-public class App 
-{
+public class App{
     public static void main( String[] args ){
     	if (AuthConfigFactory.getFactory() == null) {
             AuthConfigFactory.setFactory(new AuthConfigFactoryImpl());

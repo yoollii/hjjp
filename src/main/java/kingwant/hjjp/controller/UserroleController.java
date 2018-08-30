@@ -51,12 +51,10 @@ public class UserroleController {
 	
 	@PostMapping("/addUserRole")
 	@ApiOperation(value = "添加用户角色关系", notes = "所需参数：uid(用户id);rid(角色id)")
-	public PublicResult<Map<String, Object>> addUser(@ValidationParam("uid,rid")@RequestBody Userrole userRole) {
+	public PublicResult<Map<String, Object>> addUserRole(@ValidationParam("uid,rid")@RequestBody Userrole userRole) {
 
-		Map<String, Object> map=new HashMap<>();
         if (ComUtil.isEmpty(userRole.getRid()) || ComUtil.isEmpty(userRole.getUid())) {
-        	map.put("用户id和角色id均不能为空", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         EntityWrapper<Userrole> ew=new EntityWrapper<Userrole>();
 	    ew.setEntity(new Userrole());
@@ -64,25 +62,20 @@ public class UserroleController {
 	    ew.eq(!KwHelper.isNullOrEmpty(userRole.getRid()), "rid", userRole.getRid());
         List<Userrole> list=userroleMapper.selectList(ew);
         if(!KwHelper.isNullOrEmpty(list)&& list.size()>0) {
-        	map.put("当前用户角色关系已存在！！", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.EXISTED_USER_ROLE_RELATIONSHIP, null);
         }
         
         userRole.setId(KwHelper.newID());
         userroleMapper.insert(userRole);    
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
 
 	
 	@PostMapping("/delUserRole")
 	@ApiOperation(value = "添加用户角色关系", notes = "所需参数：uid(用户id);rid(角色id)")
 	public PublicResult<Map<String, Object>> delUserRole(@ValidationParam("uid,rid")@RequestBody Userrole userRole) {
-
-		Map<String, Object> map=new HashMap<>();
         if (ComUtil.isEmpty(userRole.getRid()) || ComUtil.isEmpty(userRole.getUid())) {
-        	map.put("用户id和角色id均不能为空", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         EntityWrapper<Userrole> ew=new EntityWrapper<Userrole>();
 	    ew.setEntity(new Userrole());
@@ -90,13 +83,11 @@ public class UserroleController {
 	    ew.eq(!KwHelper.isNullOrEmpty(userRole.getRid()), "rid", userRole.getRid());
         List<Userrole> list=userroleMapper.selectList(ew);
         if(KwHelper.isNullOrEmpty(list)&& list.size()<1) {
-        	map.put("不存在当前用户-角色关系！！", false);
-            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, map);
+            return new PublicResult<>(PublicResultConstant.NO_USER_ROLE_RELATIONSHIP, null);
         }
         String id4del=list.get(0).getId();
         userroleMapper.deleteById(id4del);   
-        map.put("成功", true);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
 	
 	
@@ -110,7 +101,7 @@ public class UserroleController {
 		ew.eq(!KwHelper.isNullOrEmpty(userRole.getRid()), "rid", userRole.getRid());
 		List<Userrole> list = userroleMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
-        map.put("成功", list);
+        map.put("data", list);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
     }
 }
