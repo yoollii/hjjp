@@ -1,0 +1,2 @@
+/hjjp-0.0.1-SNAPSHOT.jar filter=lfs diff=lfs merge=lfs -text
+target/hjjp-0.0.1-SNAPSHOT.jar filter=lfs diff=lfs merge=lfs -text
