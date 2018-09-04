@@ -16,6 +16,8 @@ import kingwant.hjjp.entity.User;
 import kingwant.hjjp.mapper.RoleMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class RoleController {
         if (KwHelper.isNullOrEmpty(role.getName())) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
+        role.setCrtime(new Date());
         role.setId(KwHelper.newID());
         roleMapper.insert(role);
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -89,6 +92,7 @@ public class RoleController {
 	    ew.setEntity(new kingwant.hjjp.entity.Role());
 		ew.like(!KwHelper.isNullOrEmpty(role.getName()), "name", role.getName());
 		ew.like(!KwHelper.isNullOrEmpty(role.getDes()), "des", role.getDes());
+		ew.orderBy("crtime", false);
 		List<kingwant.hjjp.entity.Role> list = roleMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);

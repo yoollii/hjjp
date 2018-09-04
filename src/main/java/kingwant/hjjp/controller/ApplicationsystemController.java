@@ -18,6 +18,8 @@ import kingwant.hjjp.entity.Applicationsystem;
 import kingwant.hjjp.mapper.ApplicationsystemMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class ApplicationsystemController {
 //        	map.put("flag", false);
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
+        applicationsystem.setCrtime(new Date());
         applicationsystem.setId(KwHelper.newID());
         appliMapper.insert(applicationsystem);
         
@@ -105,7 +108,7 @@ public class ApplicationsystemController {
 		}
 		ew.eq(!KwHelper.isNullOrEmpty(applicationsystem.getModelId()), "modelId", applicationsystem.getModelId());
 		
-		
+		ew.orderBy("crtime", false);
 		List<Applicationsystem> list = appliMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);

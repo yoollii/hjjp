@@ -9,11 +9,12 @@
         <result column="code" property="code" />
         <result column="weight" property="weight" />
         <result column="pid" property="pid" />
+        <result column="crtime" property="crtime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, code, weight, pid
+        id, name, code, weight, pid, crtime
     </sql>
 
 </mapper>

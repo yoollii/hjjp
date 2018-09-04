@@ -17,6 +17,8 @@ import kingwant.hjjp.entity.Powers;
 import kingwant.hjjp.mapper.PowersMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ public class PowersController {
         		|| ComUtil.isEmpty(powers.getPid())) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
+        powers.setCrtime(new Date());
         powers.setId(KwHelper.newID());
         powersMapper.insert(powers);
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -84,6 +87,7 @@ public class PowersController {
 		ew.eq(!KwHelper.isNullOrEmpty(powers.getCode()), "code", powers.getCode());
 		ew.eq(!KwHelper.isNullOrEmpty(powers.getPid()), "pid", powers.getPid());
 
+		ew.orderBy("crtime", false);
 		List<Powers> list = powersMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);

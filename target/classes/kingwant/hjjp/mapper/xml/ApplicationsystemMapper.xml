@@ -11,11 +11,12 @@
         <result column="baseUrl" property="baseUrl" />
         <result column="modelId" property="modelId" />
         <result column="state" property="state" />
+        <result column="crtime" property="crtime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, mane, useFlag, des, baseUrl, modelId, state
+        id, mane, useFlag, des, baseUrl, modelId, state, crtime
     </sql>
 
 </mapper>

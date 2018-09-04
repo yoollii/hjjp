@@ -17,6 +17,8 @@ import kingwant.hjjp.entity.Ser;
 import kingwant.hjjp.mapper.SerMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class SerController {
         	//Object aObject="名称，模型id，状态均不能为空";
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
+        ser.setCrtime(new Date());
         ser.setId(KwHelper.newID());
         serMapper.insert(ser);
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -88,8 +91,9 @@ public class SerController {
 			ew.eq(!KwHelper.isNullOrEmpty(ser.getUrlFlag().toString()), "useFlag", ser.getUrlFlag());
 			ew.eq(!KwHelper.isNullOrEmpty(ser.getState().toString()), "state", ser.getState());
 		} catch (Exception e) {
-			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
+//			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 		}
+		ew.orderBy("crtime", false);
 		List<Ser> list = serMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);

@@ -1,6 +1,7 @@
 package kingwant.hjjp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -25,6 +26,16 @@ public class Propertyconfig extends Model<Propertyconfig> {
     private String modelId;
     private String flowId;
     private String taskId;
+    private Date crtime;
+
+
+    public Date getCrtime() {
+		return crtime;
+	}
+
+	public void setCrtime(Date crtime) {
+		this.crtime = crtime;
+	}
 
 
     public String getId() {

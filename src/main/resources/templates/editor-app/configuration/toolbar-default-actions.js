@@ -378,6 +378,7 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
             description: $scope.saveDialog.description
         };
 
+        debugger;
         // Update
         $http({    method: 'PUT',
             data: params,

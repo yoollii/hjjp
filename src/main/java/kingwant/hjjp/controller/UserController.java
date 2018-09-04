@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
@@ -20,6 +22,8 @@ import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.entity.User;
 import kingwant.hjjp.mapper.UserMapper;
 import kingwant.hjjp.util.KwHelper;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +64,7 @@ public class UserController {
 		user.setState(state);
 		user.setGroupName(group);
 		user.setRid(rid);
+		user.setCrtime(new Date());
 		userMapper.insert(user);
         
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -106,6 +111,8 @@ public class UserController {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		
+		ew.orderBy("crtime", false);
 		ew.eq(!KwHelper.isNullOrEmpty(user.getRid()), "rid", user.getRid());
 		List<User> list = userMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();

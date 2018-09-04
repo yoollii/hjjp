@@ -12,11 +12,12 @@
         <result column="modelId" property="modelId" />
         <result column="flowId" property="flowId" />
         <result column="taskId" property="taskId" />
+        <result column="crtime" property="crtime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dataMap, inConfig, outConfig, serId, modelId, flowId, taskId
+        id, dataMap, inConfig, outConfig, serId, modelId, flowId, taskId, crtime
     </sql>
 
 </mapper>

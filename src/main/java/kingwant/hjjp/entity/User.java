@@ -1,6 +1,7 @@
 package kingwant.hjjp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -22,9 +23,18 @@ public class User extends Model<User> {
     private Integer state;
     private String groupName;
     private String rid;
+    private Date crtime;
 
 
-    public String getRid() {
+    public Date getCrtime() {
+		return crtime;
+	}
+
+	public void setCrtime(Date crtime) {
+		this.crtime = crtime;
+	}
+
+	public String getRid() {
 		return rid;
 	}
 

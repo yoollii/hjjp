@@ -1,6 +1,7 @@
 package kingwant.hjjp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -22,6 +23,16 @@ public class Powers extends Model<Powers> {
     private String code;
     private String weight;
     private String pid;
+    private Date crtime;
+
+
+    public Date getCrtime() {
+		return crtime;
+	}
+
+	public void setCrtime(Date crtime) {
+		this.crtime = crtime;
+	}
 
 
     public String getId() {

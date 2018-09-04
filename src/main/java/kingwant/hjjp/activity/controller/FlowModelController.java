@@ -3,8 +3,10 @@ package kingwant.hjjp.activity.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +24,7 @@ import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.editor.language.json.converter.BpmnJsonConverterUtil;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -39,6 +42,8 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.image.ProcessDiagramGenerator;
+import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -59,10 +64,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.service.ACTTaskService;
 import xyz.michaelch.mchtools.MCHException;
 import xyz.michaelch.mchtools.hepler.BeanHelper;
 
+@Api(tags = "Activiti流程模型")
 @Controller
 @RequestMapping(value = "/model")
 public class FlowModelController {
@@ -73,7 +82,6 @@ public class FlowModelController {
 	// private RepositoryService repositoryService;
 	@Autowired
 	RepositoryService repositoryService;
-
 	// 流程对象
 	// private LeaveManager leaveManager;
 	@Autowired
@@ -84,14 +92,19 @@ public class FlowModelController {
 	HistoryService historyService;
 	@Autowired
 	ACTTaskService actTaskService;
+	@Autowired
+	ProcessEngine processEngine;
+	
+	
 
 	/**
 	 * 创建模型
 	 * 
 	 * @throws MCHException
 	 */
-	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public void create(@RequestParam("name") String name, @RequestParam("key") String key, String description,
+	@ApiOperation(value = "创建流程模型", notes = "所需参数：name(名字);key(关键字);description(描述)")
+	@RequestMapping(value = "create")
+	public String create(String name,  String key, String description,
 			HttpServletRequest request, HttpServletResponse response) throws MCHException {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -102,12 +115,11 @@ public class FlowModelController {
 			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
 			editorNode.put("stencilset", stencilSetNode);
 			Model modelData = repositoryService.newModel();
-
 			ObjectNode modelObjectNode = objectMapper.createObjectNode();
-			modelObjectNode.put(ModelDataJsonConstants.MODEL_NAME, name);
-			modelObjectNode.put(ModelDataJsonConstants.MODEL_REVISION, 1);
+			modelObjectNode.put("name", name);
+			modelObjectNode.put("revision", 1);
 			description = StringUtils.defaultString(description);
-			modelObjectNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, description);
+			modelObjectNode.put("description", description);
 			// modelObjectNode.put("FormId", formId);
 			modelData.setMetaInfo(modelObjectNode.toString());
 			modelData.setName(name);
@@ -116,8 +128,9 @@ public class FlowModelController {
 			repositoryService.saveModel(modelData);
 			repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
 
-			response.sendRedirect(
-					request.getContextPath() + "/modeler.html?modelId=" + modelData.getId() + "&key=" + key);
+//			response.sendRedirect(
+//					request.getContextPath() + "modeler.html?modelId=" + modelData.getId() + "&key=" + key);
+			return "redirect:/modeler.html?modelId="+ modelData.getId() + "&key=" + key;
 
 		} catch (Exception e) {
 			throw new MCHException();
@@ -129,7 +142,7 @@ public class FlowModelController {
 	// * @param id
 	// * @return
 	// */
-	
+	@ApiOperation(value = "删除流程模型", notes = "所需参数：modelId(流程模型id) ")
 	@RequiresPermissions("app:flow:model:del") 
 	@RequestMapping(value = "delete")
 	public String delete(@RequestParam("modelId") String modelId, org.springframework.ui.Model model) {
@@ -157,6 +170,7 @@ public class FlowModelController {
 
 		// 获取流程中的表单信息
 		Model modelData = repositoryService.getModel(modelId);
+	
 		ObjectNode modelNode;
 		try {
 			modelNode = (ObjectNode) new ObjectMapper()
@@ -359,7 +373,8 @@ public class FlowModelController {
 	}
 
 	
-
+    //流程定于id  生成的流程图
+	@ApiOperation(value = "获取流程定义列表", notes = "所需参数：processKey(过滤关键参数条件)")
 	@RequestMapping(value = "/resource/read")
 	public void loadByDeployment(@RequestParam("processDefinitionId") String processDefinitionId,
 			@RequestParam("resourceType") String resourceType, HttpServletResponse response) throws Exception {
@@ -380,6 +395,38 @@ public class FlowModelController {
 		}
 	}
 
+	// 流程定于id 生成模型定义的流程图
+	@ApiOperation(value = "获取流程定义列表", notes = "所需参数：modelId(模型id)")
+	@RequestMapping(value = "/resource/readModel")
+	public void imgModel(@RequestParam("modelId") String modelId, HttpServletResponse response) throws Exception {
+
+		Model modelData = repositoryService.getModel(modelId);
+		ObjectNode modelNode = null;
+
+		try {
+			modelNode = (ObjectNode) new ObjectMapper()
+					.readTree(repositoryService.getModelEditorSource(modelData.getId()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+		ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
+		InputStream inputStream = processDiagramGenerator.generatePngDiagram(model);
+		
+		byte[] b = new byte[1024];
+		int len = -1;
+		while ((len = inputStream.read(b, 0, 1024)) != -1) {
+			response.getOutputStream().write(b, 0, len);
+		}
+
+//		OutputStream out = response.getOutputStream();
+//		for (int b = -1; (b = inputStream.read()) != -1;) {
+//			out.write(b);
+//		}
+//		out.close();
+		inputStream.close();
+		/////
+	}
 	///////////
 	@RequestMapping(value = "/resource/read2")
 	public String loadByDeployment2(@RequestParam("processDefinitionId") String processDefinitionId,

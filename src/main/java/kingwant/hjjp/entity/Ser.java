@@ -1,6 +1,7 @@
 package kingwant.hjjp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -24,6 +25,16 @@ public class Ser extends Model<Ser> {
     private Integer orders;
     private Integer urlFlag;
     private String url;
+    private Date crtime;
+
+
+    public Date getCrtime() {
+		return crtime;
+	}
+
+	public void setCrtime(Date crtime) {
+		this.crtime = crtime;
+	}
 
 
     public String getId() {

@@ -35,9 +35,13 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.entity.User;
@@ -46,7 +50,8 @@ import kingwant.hjjp.util.Page;
 import kingwant.hjjp.util.PageUtil;
 import xyz.michaelch.mchtools.hepler.BeanHelper;
 
-@Controller
+@Api(tags = "流程activiti接口")
+@RestController
 @RequestMapping(value = "/activiti")
 public class ActivitiController {
 
@@ -64,10 +69,9 @@ public class ActivitiController {
 	@Autowired
 	ACTTaskService actTaskService;
 
-
-
 	private static Logger logger = Logger.getLogger(ActivitiController.class);
 
+	@ApiOperation(value = "获取流程定义列表", notes = "所需参数：processKey(过滤关键参数条件)")
 	@RequestMapping("defList")
 	public PublicResult<Map<String, Object>> defList(HttpServletRequest request, Model model ) {
 
@@ -108,6 +112,7 @@ public class ActivitiController {
 	}
 
 	//版本列表
+	@ApiOperation(value = "根据key获取版本列表", notes = "所需参数：key(必要查询条件)")
 	@RequestMapping("verList")
 	public PublicResult<Map<String, Object>> verList(@RequestParam(value = "key") String key, HttpServletRequest request, Model model) {
 		List<Object[]> objects = new ArrayList<Object[]>();
@@ -135,7 +140,7 @@ public class ActivitiController {
 		model.addAttribute("pageIndex", page.getPageNo());
 		
 		Map<String, Object> map=new HashMap<>();
-        map.put("data",  page.getResult());
+        map.put("data",  objects);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
 
 //		return "activiti/content";
@@ -148,11 +153,10 @@ public class ActivitiController {
 	 * @param model
 	 * @return String
 	 */
-	@RequestMapping(value = "modelList")
-	public String modelList(HttpServletRequest request, Model model) {
-
+	@ApiOperation(value = "查找模型列表", notes = "所需参数：name(名称);key(表单名称)")
+	@PostMapping(value = "modelList")
+	public PublicResult<Map<String, Object>> modelList(HttpServletRequest request, Model model,String name,String key) {
 		// 差一个条件
-
 		Page<org.activiti.engine.repository.Model> page = new Page<org.activiti.engine.repository.Model>(
 				PageUtil.PAGE_SIZE);
 		int[] pageParams = PageUtil.init(page, request);
@@ -176,17 +180,24 @@ public class ActivitiController {
 			query.modelNameLike(namesss);
 		}
 		query.orderByModelKey().desc();
-		List<org.activiti.engine.repository.Model> list = query2.listPage(pageParams[0], pageParams[1]);
+		List<org.activiti.engine.repository.Model> list = query2.list();
+//				listPage(pageParams[0], pageParams[1]);
 		page.setTotalCount(query.count());
 		page.setResult(list);
-		model.addAttribute("list", page.getResult());
-		model.addAttribute("totalSize", page.getTotalCount());
-		model.addAttribute("totalPage", page.getTotalPages());
-		model.addAttribute("pageSize", page.getPageSize());
-		model.addAttribute("pageIndex", page.getPageNo());
-		return "activiti/modelList2";
+		Map<String, Object> map=new HashMap<>();
+        map.put("data", list);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, map);
+//		
+//		model.addAttribute("list", page.getResult());
+//		model.addAttribute("totalSize", page.getTotalCount());
+//		model.addAttribute("totalPage", page.getTotalPages());
+//		model.addAttribute("pageSize", page.getPageSize());
+//		model.addAttribute("pageIndex", page.getPageNo());
+//		return "activiti/modelList2";
 	}
 
+	//流程跑起来后跑到某一步的图
+	@ApiOperation(value = "获取流程起单图片(流程跑起来后跑到某一步的图)", notes = "所需参数：processInstanceId(流程id)")
 	@RequestMapping(value = "getActivitiImag")
 	public void getActivitiImag(@RequestParam("processInstanceId") String processInstanceId, HttpServletRequest request,
 			HttpServletResponse response, Model model) throws IOException {

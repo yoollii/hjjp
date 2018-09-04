@@ -1,6 +1,7 @@
 package kingwant.hjjp.controller;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class PropertyconfigController {
         		|| ComUtil.isEmpty(propertyconfig.getOutConfig())) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
+        propertyconfig.setCrtime(new Date());
         propertyconfig.setId(KwHelper.newID());
         propertyconfigMapper.insert(propertyconfig);
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -98,7 +100,7 @@ public class PropertyconfigController {
 		ew.like(!KwHelper.isNullOrEmpty(Propertyconfig.getModelId()), "modelId", Propertyconfig.getModelId());
 		ew.like(!KwHelper.isNullOrEmpty(Propertyconfig.getFlowId()), "flowId", Propertyconfig.getFlowId());
 		ew.like(!KwHelper.isNullOrEmpty(Propertyconfig.getTaskId()), "taskId", Propertyconfig.getTaskId());
-		
+		ew.orderBy("crtime", false);
 		List<Propertyconfig> list = propertyconfigMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.annotation.ValidationParam;
@@ -17,14 +20,24 @@ import kingwant.hjjp.entity.Flowmodel;
 import kingwant.hjjp.mapper.FlowmodelMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
+import xyz.michaelch.mchtools.MCHException;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.Model;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  * <p>
@@ -99,6 +112,7 @@ public class FlowmodelController {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR,null);
         }
         flowmodel.setId(KwHelper.newID());
+        flowmodel.setCrtime(new Date());
         flowmodelMapper.insert(flowmodel);
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }
@@ -144,7 +158,7 @@ public class FlowmodelController {
 		ew.like(!KwHelper.isNullOrEmpty(flowmodel.getName()), "name", flowmodel.getName());
 		
 		ew.eq(!KwHelper.isNullOrEmpty(flowmodel.getCruser()), "cruser", flowmodel.getCruser());
-		
+		ew.orderBy("crtime", false);
 		List<Flowmodel> list = flowmodelMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
         map.put("data", list);
