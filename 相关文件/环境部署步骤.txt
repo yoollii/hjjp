@@ -1,0 +1,14 @@
+基本配置：
+        路径：src-main-resources-config-application-dev.properties
+   server.port：访问端口号
+   spring.datasource.*  数据库相关配置
+   
+   
+打jar包： 在eclipse（开发时用的eclipse）环境中打开项目（jdk版本1.8以上）
+        1.右击项目-Run As-maven clean 清除
+        2.右击项目-Run As-maven install 打包（命令执行完成，看到 BUILD SUCCESS 即为打包成功）
+执行jar包 
+        1.在  工作空间目录-项目名-target-*.jar 就是打包完成的jar包
+        2.将jar包挪到任意路径（列子为：d:\hjjp\hjjp.jar(修改了jar包名字)）
+        3.打开dos（windows+r -> cmd）窗口，执行java -jar d:\hjjp\hjjp.jar 或者当前路径挪到jar包那儿，再执行java -jar hjjp.jar执行jar包
+         

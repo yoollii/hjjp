@@ -1,0 +1,248 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50717
+Source Host           : 192.168.1.253:3306
+Source Database       : hdpt
+
+Target Server Type    : MYSQL
+Target Server Version : 50717
+File Encoding         : 65001
+
+Date: 2018-09-06 09:13:45
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for applicationsystem
+-- ----------------------------
+DROP TABLE IF EXISTS `applicationsystem`;
+CREATE TABLE `applicationsystem` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `useFlag` int(1) DEFAULT NULL COMMENT '应用标识',
+  `des` varchar(64) DEFAULT NULL COMMENT '--描述',
+  `baseUrl` varchar(128) DEFAULT NULL COMMENT '基础地址',
+  `modelId` varchar(32) DEFAULT NULL,
+  `state` int(1) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of applicationsystem
+-- ----------------------------
+INSERT INTO `applicationsystem` VALUES ('17d54507d0f24902bf4b1d8fb63e1324', 'str000', '2121', 'fs', '45', '187505', '0', '2018-09-05 17:22:04');
+INSERT INTO `applicationsystem` VALUES ('4f64cd732f664b4f8a10ea0471cdace5', '12133', '111', '123', '12312', '185016', '0', '2018-09-04 11:06:43');
+INSERT INTO `applicationsystem` VALUES ('55fadfed83a94071a4e7b06c52d32a61', '33434', '34', '34', '34', '185018', '0', '2018-09-04 15:06:21');
+INSERT INTO `applicationsystem` VALUES ('f782f43365b5454ebc481dcff835d320', 'str000', '2121', 'wsf', '45', '185016', '0', '2018-09-05 16:55:23');
+
+-- ----------------------------
+-- Table structure for flowmodel
+-- ----------------------------
+DROP TABLE IF EXISTS `flowmodel`;
+CREATE TABLE `flowmodel` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `state` int(1) DEFAULT NULL,
+  `cruser` varchar(32) DEFAULT NULL,
+  `des` varchar(1024) DEFAULT NULL,
+  `orders` int(1) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of flowmodel
+-- ----------------------------
+INSERT INTO `flowmodel` VALUES ('24c50dad43d043199adf0b771b0e9f11', '测试', '1', '管理员', '123213', null, '2018-08-31 17:04:31');
+INSERT INTO `flowmodel` VALUES ('318fa61530d940ea8cee8a32ebe022a6', 'yoollii', '1', '管理员', '111', null, '2018-09-05 15:05:51');
+INSERT INTO `flowmodel` VALUES ('324127b447954f45b72beef93d6feb27', 'yoollii', '1', '管理员', '111', null, '2018-09-05 15:01:04');
+INSERT INTO `flowmodel` VALUES ('3b0c56a80efe4ace944f3a73c557f586', 'd', '1', '管理员', '111', null, '2018-09-04 17:52:21');
+INSERT INTO `flowmodel` VALUES ('6532024d5b3346fc9d176547f2a6b0b4', 't4', '1', '4', '344', null, '2018-09-04 10:47:56');
+INSERT INTO `flowmodel` VALUES ('6b75d60fd7944e889db40f2e7c8c2229', 'd', '1', '管理员', '111', null, '2018-09-04 18:10:17');
+INSERT INTO `flowmodel` VALUES ('9d33698709d14b20a1fef49020aeebbe', '123', '1', '12321', '21321', null, null);
+INSERT INTO `flowmodel` VALUES ('a0ce9ca20e7b45238f6bfafe2df3e67a', 'yoollii', '1', '管理员', '2212', '0', null);
+INSERT INTO `flowmodel` VALUES ('a297e4b4ae20417fb1eea69997293b04', '123', '1', '123', '123', '0', null);
+INSERT INTO `flowmodel` VALUES ('a887572b9a0d4c25a6216890f5b24c76', 'str000', '1', '管理员', '111', '0', null);
+INSERT INTO `flowmodel` VALUES ('b2777584f9cc40fab8c4d179983c15e2', 'ss', '1', 'ssss', 'ssss', '0', null);
+INSERT INTO `flowmodel` VALUES ('c760e3c29cd94b3795cc418fe3ca94ca', 'yoollii', '0', '管理员', '2212', '0', null);
+INSERT INTO `flowmodel` VALUES ('ce72a8d83b6e4423a0d2ce6cb65f8e94', 'yoollii', '1', '管理员', '111', null, '2018-09-05 15:24:21');
+INSERT INTO `flowmodel` VALUES ('cffa3340c19b4e8e9f9b12d1c9bce051', 'yoollii', '1', '管理员', '111', '0', null);
+INSERT INTO `flowmodel` VALUES ('e64439abfcee40578ed66936f14e19f7', '12321', '1', '213213', '123213', '0', null);
+INSERT INTO `flowmodel` VALUES ('ea01e635420349dfb27b43f879e402b8', 'd', '1', '1', '1', null, null);
+INSERT INTO `flowmodel` VALUES ('efa289ca1ae943c2a09ba028b5445a7d', 'yoollii', '1', '管理员', '123213', null, null);
+
+-- ----------------------------
+-- Table structure for institution
+-- ----------------------------
+DROP TABLE IF EXISTS `institution`;
+CREATE TABLE `institution` (
+  `id` varchar(32) DEFAULT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `des` varchar(128) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  `orders` int(8) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of institution
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for powers
+-- ----------------------------
+DROP TABLE IF EXISTS `powers`;
+CREATE TABLE `powers` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(64) DEFAULT NULL,
+  `code` varchar(32) DEFAULT NULL,
+  `weight` varchar(32) DEFAULT NULL,
+  `pid` varchar(32) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of powers
+-- ----------------------------
+INSERT INTO `powers` VALUES ('1', '基本功能', 'jbgn', '1', '-1', null);
+INSERT INTO `powers` VALUES ('10', '应用系统管理', 'yyxtgl', '10', '5', null);
+INSERT INTO `powers` VALUES ('11', '输入文字', 'srwz', '11', '6', null);
+INSERT INTO `powers` VALUES ('12', '输入文字2', 'srwz2', '12', '6', null);
+INSERT INTO `powers` VALUES ('13', '输入文字3', 'srwz3', '13', '6', null);
+INSERT INTO `powers` VALUES ('14', '流程模板管理', 'lcmbgl', '14', '8', null);
+INSERT INTO `powers` VALUES ('15', '任务监控', 'rwjk', '15', '8', null);
+INSERT INTO `powers` VALUES ('16', '任务统计', 'rwtj', '16', '8', null);
+INSERT INTO `powers` VALUES ('17', '综合集成研讨环境', 'hjcythj', '17', '2', null);
+INSERT INTO `powers` VALUES ('18', '仿真评估与兵棋推演', 'fzpgybqty', '18', '2', null);
+INSERT INTO `powers` VALUES ('19', '计算资源调度', 'jszydd', '19', '2', null);
+INSERT INTO `powers` VALUES ('2', '其他功能', 'qtgn', '2', '-1', null);
+INSERT INTO `powers` VALUES ('20', '智能化安装部署', 'znhazbs', '20', '2', null);
+INSERT INTO `powers` VALUES ('21', '兼容运行管理', 'jryxgl', '21', '2', null);
+INSERT INTO `powers` VALUES ('22', '信息接引管理', 'xxjygl', '22', '2', null);
+INSERT INTO `powers` VALUES ('23', '消息管理', 'xxgl', '23', '2', null);
+INSERT INTO `powers` VALUES ('24', '用户分级认证与访问控制', 'yhfjrzyfwkz', '24', '2', null);
+INSERT INTO `powers` VALUES ('25', '用户管理', 'yhgl', '25', '24', null);
+INSERT INTO `powers` VALUES ('26', '角色管理', 'jsgl', '26', '24', null);
+INSERT INTO `powers` VALUES ('27', '常规任务规划系统', 'cgrwghxt', '27', '3', null);
+INSERT INTO `powers` VALUES ('28', '常规作战规划系统', 'cgzzghxt', '28', '3', null);
+INSERT INTO `powers` VALUES ('29', '反舰作战任务规划系统', 'fjzzghxt', '29', '3', null);
+INSERT INTO `powers` VALUES ('3', '应用系统', 'yyxt', '3', '-1', null);
+INSERT INTO `powers` VALUES ('30', 'DF-21DA反舰航母作战任务规划系统', 'fjhmzzrwghxt', '30', '3', null);
+INSERT INTO `powers` VALUES ('31', '输入文字', 'srwz4', '31', '4', null);
+INSERT INTO `powers` VALUES ('32', '输入文字', 'srwz5', '32', '4', null);
+INSERT INTO `powers` VALUES ('4', '链接管理', 'ljgl', '4', '-1', null);
+INSERT INTO `powers` VALUES ('5', '应用系统孵化器', 'yyxtfhq', '5', '1', null);
+INSERT INTO `powers` VALUES ('6', '业务功能组件管理', 'yygnzjgl', '6', '1', null);
+INSERT INTO `powers` VALUES ('7', '通用支撑插件管理', 'tyzccjgl', '7', '1', null);
+INSERT INTO `powers` VALUES ('8', '业务流程管理', 'ywlcgl', '8', '1', null);
+INSERT INTO `powers` VALUES ('9', '专用数据管理', 'zysjgl', '9', '1', null);
+
+-- ----------------------------
+-- Table structure for propertyconfig
+-- ----------------------------
+DROP TABLE IF EXISTS `propertyconfig`;
+CREATE TABLE `propertyconfig` (
+  `id` varchar(32) NOT NULL,
+  `dataMap` varchar(32) DEFAULT NULL,
+  `inConfig` varchar(32) DEFAULT NULL,
+  `outConfig` varchar(32) DEFAULT NULL,
+  `serId` varchar(32) DEFAULT NULL,
+  `modelId` varchar(32) DEFAULT NULL,
+  `flowId` varchar(32) DEFAULT NULL,
+  `taskId` varchar(32) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of propertyconfig
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for role
+-- ----------------------------
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `des` varchar(128) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of role
+-- ----------------------------
+INSERT INTO `role` VALUES ('39a334d626d74c5396b0fef436877bc5', 'Baidu', '11111111', null);
+INSERT INTO `role` VALUES ('71b9b547d4fe42ada9930c2e2966002d', '测试角色', '角色说明', null);
+INSERT INTO `role` VALUES ('725d820288a349fe9bb743dfdc1a976c', '测试角色名称', '456', null);
+INSERT INTO `role` VALUES ('734eeb01e8b64175815ad1e725ab26d6', '测试角色1111', '测试', null);
+INSERT INTO `role` VALUES ('c12ddc222a5f43589815e7a2ae7947e3', 'yoollii', '123213', null);
+
+-- ----------------------------
+-- Table structure for ser
+-- ----------------------------
+DROP TABLE IF EXISTS `ser`;
+CREATE TABLE `ser` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `state` int(1) DEFAULT NULL,
+  `des` varchar(1024) DEFAULT NULL,
+  `orders` int(1) DEFAULT NULL,
+  `urlFlag` int(1) DEFAULT NULL,
+  `url` varchar(128) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of ser
+-- ----------------------------
+INSERT INTO `ser` VALUES ('1d8d80422a184de6ba035875aff1dbfe', 'str000', '0', '11', null, '11', 'http://tech.ifeng.com/a/20171016/44716495_0.shtml', '2018-09-05 12:10:28');
+INSERT INTO `ser` VALUES ('1eeca3b340894a8cb01755811a4ee9cb', 'yoollii', '0', '66', null, '3', 'http://tech.ifeng.com/a/20171016/44716495_0.shtml', '2018-09-05 11:59:27');
+INSERT INTO `ser` VALUES ('9ea93b62321f48d8ab10ace3bbe57726', 'Baidu', '1', 'dfdf', null, '3', 'http://mini.eastday.com/mobile/170321223520608.html#', '2018-09-05 12:02:31');
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `state` int(1) DEFAULT NULL,
+  `groupName` varchar(32) DEFAULT NULL,
+  `rid` varchar(32) DEFAULT NULL,
+  `crtime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
+INSERT INTO `user` VALUES ('018b7a198d154f05a17e95e1aa91702b', 'yoollii', '0', '1组', '725d820288a349fe9bb743dfdc1a976c', '2018-08-09 09:53:57');
+INSERT INTO `user` VALUES ('111', '222', '1', '1组', '725d820288a349fe9bb743dfdc1a976c', '2018-08-15 09:54:00');
+INSERT INTO `user` VALUES ('3042a019f69d4f80906ad6c16cf7600a', 'yoolliiewewr', '1', '1组', '39a334d626d74c5396b0fef436877bc5', '2018-09-04 18:35:55');
+INSERT INTO `user` VALUES ('3df22ef3d5b64648912d3959c171795d', 'sssss', '1', '2组', '71b9b547d4fe42ada9930c2e2966002d', '2018-08-15 09:54:08');
+INSERT INTO `user` VALUES ('6cbb8a448e7f467ea69f0d5a2702d8ee', '123', '1', '1组', '39a334d626d74c5396b0fef436877bc5', '2018-08-01 09:54:14');
+INSERT INTO `user` VALUES ('dd9c5a21d7644f24b440ef0824cbe672', 'qqqqqq', '1', '2组', '71b9b547d4fe42ada9930c2e2966002d', '2018-08-28 09:54:23');
+INSERT INTO `user` VALUES ('f53dbc96b4724085b627bac914d44206', 'Baidu', '1', '2组', '39a334d626d74c5396b0fef436877bc5', '2018-08-31 17:13:25');
+
+-- ----------------------------
+-- Table structure for userrole
+-- ----------------------------
+DROP TABLE IF EXISTS `userrole`;
+CREATE TABLE `userrole` (
+  `id` varchar(32) NOT NULL,
+  `uid` varchar(32) DEFAULT NULL,
+  `rid` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of userrole
+-- ----------------------------
+INSERT INTO `userrole` VALUES ('e393467329714dde9caf92938e50b139', '123', '121');
