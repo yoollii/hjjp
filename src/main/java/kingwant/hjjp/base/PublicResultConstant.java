@@ -105,11 +105,11 @@ public enum PublicResultConstant {
     /**
      * 已存在该角色用户关系
      */
-    EXISTED_USER_ROLE_RELATIONSHIP("5010","已存在当前用户角色关系"),
+    EXISTED_USER_ROLE_RELATIONSHIP("5010","已存在当前关系"),
     /**
      * 不已存在当前角色用户关系
      */
-    NO_USER_ROLE_RELATIONSHIP("5010","不已存在当前用户角色关系"),
+    NO_USER_ROLE_RELATIONSHIP("5010","不已存在当前关系"),
     /**
      * 操作数据库失败
      */

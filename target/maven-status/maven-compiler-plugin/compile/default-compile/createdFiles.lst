@@ -9,6 +9,7 @@ kingwant\hjjp\util\GenerationSequenceUtil.class
 kingwant\hjjp\mapper\PowersMapper.class
 kingwant\hjjp\controller\UserroleController.class
 kingwant\hjjp\base\Constant.class
+kingwant\hjjp\controller\UserInstitutionController.class
 kingwant\hjjp\base\Constant$FileType.class
 kingwant\hjjp\base\PageResult.class
 kingwant\hjjp\config\MpGenerator2.class
@@ -33,6 +34,7 @@ kingwant\hjjp\service\IUserService.class
 kingwant\hjjp\mapper\SerMapper.class
 kingwant\hjjp\mapper\UserroleMapper.class
 kingwant\hjjp\controller\PropertyconfigController.class
+kingwant\hjjp\controller\InstitutionController.class
 kingwant\hjjp\util\Page.class
 kingwant\hjjp\service\impl\ApplicationsystemServiceImpl.class
 kingwant\hjjp\controller\UserController.class
@@ -41,6 +43,7 @@ kingwant\hjjp\mapper\ApplicationsystemMapper.class
 kingwant\hjjp\base\PageMongo.class
 kingwant\hjjp\entity\Propertyconfig.class
 kingwant\hjjp\entity\RecordOfApproval.class
+kingwant\hjjp\mapper\InstitutionMapper.class
 kingwant\hjjp\exception\ParamJsonException.class
 kingwant\hjjp\base\PublicResultConstant.class
 kingwant\hjjp\util\JWTUtil.class
@@ -71,12 +74,15 @@ kingwant\hjjp\annotation\Log.class
 kingwant\hjjp\util\GenerationSequenceUtil$SnowflakeIdWorker.class
 kingwant\hjjp\util\NumUtil.class
 kingwant\hjjp\util\MongoDBUtil.class
+kingwant\hjjp\mapper\UserinstitutionMapper.class
+kingwant\hjjp\entity\Userinstitution.class
 kingwant\hjjp\service\IPropertyconfigService.class
 kingwant\hjjp\controller\ModelSaveRestResource.class
 kingwant\hjjp\service\impl\UserroleServiceImpl.class
 kingwant\hjjp\mapper\UserMapper.class
 kingwant\hjjp\service\impl\ACTTaskServiceImpl.class
 kingwant\hjjp\service\ISerService.class
+kingwant\hjjp\entity\Institutions.class
 kingwant\hjjp\service\IApplicationsystemService.class
 kingwant\hjjp\controller\ModelEditorJsonRestResource.class
 kingwant\hjjp\activity\Activity2Controller.class

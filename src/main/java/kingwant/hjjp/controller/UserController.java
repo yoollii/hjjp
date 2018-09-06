@@ -20,7 +20,9 @@ import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.entity.User;
+import kingwant.hjjp.entity.Userinstitution;
 import kingwant.hjjp.mapper.UserMapper;
+import kingwant.hjjp.mapper.UserinstitutionMapper;
 import kingwant.hjjp.util.KwHelper;
 
 import java.util.Date;
@@ -46,9 +48,11 @@ public class UserController {
 		
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private UserinstitutionMapper userinstitutionMapper;
 	
 	@PostMapping("/addUser")
-	@ApiOperation(value = "添加用户", notes = "所需参数：name(名字);state(状态),group(分组名),rid(角色id)")
+	@ApiOperation(value = "添加用户", notes = "所需参数：name(名字);state(状态),group(分组名),rid(角色id),institutionsId(机构id)")
 	public PublicResult<Map<String, Object>> addUser(@ValidationParam("name,state,group,rid")@RequestBody JSONObject requestJson) {
 		String name = requestJson.getString("name");
         int state = requestJson.getInteger("state");
@@ -66,6 +70,15 @@ public class UserController {
 		user.setRid(rid);
 		user.setCrtime(new Date());
 		userMapper.insert(user);
+		
+		String institutionsId=requestJson.getString("institutionsId");
+		if(!KwHelper.isNullOrEmpty(institutionsId) && !institutionsId.equals("-1")) {
+			Userinstitution userinstitution=new Userinstitution();
+			userinstitution.setIid(institutionsId);
+			userinstitution.setUid(user.getId());
+			userinstitution.setId(KwHelper.newID());
+			userinstitutionMapper.insert(userinstitution);
+		}
         
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
     }

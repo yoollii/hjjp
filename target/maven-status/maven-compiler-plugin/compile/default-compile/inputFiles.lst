@@ -1,6 +1,7 @@
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\activity\Activity2Controller.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\UserroleMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\User.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\UserInstitutionController.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\exception\ParamJsonException.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\CorsConfig.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\ModelSaveRestResource.java
@@ -15,12 +16,12 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\DateTimeUtil.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\annotation\Log.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\BaseResult.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\ModelEditorJsonRestResource.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\InstitutionMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\PropertyconfigMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Ser.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\Page.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\PowersServiceImpl.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\SerMapper.java
-D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Institution.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\Activiti2Controller.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\RoleController.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\GenerationSequenceUtil.java
@@ -54,12 +55,14 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\IRoleService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\ISerService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\NumUtil.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\SerController.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Institutions.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\IFlowmodelService.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\RoleServiceImpl.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Flowmodel.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\PublicResult.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\FlowmodelController.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Propertyconfig.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\mapper\UserinstitutionMapper.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\exception\UnauthorizedException.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\MD5Util.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\PageMongo.java
@@ -69,6 +72,7 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\annotation\Pass.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\PageResult.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\JpushClientUtil.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\aspect\AspectApi.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Userinstitution.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\ACTTaskServiceImpl.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\PowersController.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\PageUtil.java
@@ -84,5 +88,6 @@ D:\workSpace\hjjp\src\main\java\kingwant\hjjp\service\impl\UserServiceImpl.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\util\AliyunUtil.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\ApplicationsystemController.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\base\BusinessException.java
+D:\workSpace\hjjp\src\main\java\kingwant\hjjp\controller\InstitutionController.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\App.java
 D:\workSpace\hjjp\src\main\java\kingwant\hjjp\entity\Applicationsystem.java

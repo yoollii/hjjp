@@ -1,0 +1,62 @@
+package kingwant.hjjp.entity;
+
+import java.io.Serializable;
+
+import com.baomidou.mybatisplus.activerecord.Model;
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author ch123
+ * @since 2018-08-15
+ */
+public class Userinstitution extends Model<Userinstitution> {
+
+    private static final long serialVersionUID = 1L;
+
+    private String id;
+    private String uid;
+    private String iid;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getIid() {
+        return iid;
+    }
+
+    public void setIid(String iid) {
+        this.iid = iid;
+    }
+
+    @Override
+    protected Serializable pkVal() {
+        return this.id;
+    }
+
+    @Override
+    public String toString() {
+        return "Userrole{" +
+        "id=" + id +
+        ", uid=" + uid +
+        ", iid=" + iid +
+        "}";
+    }
+}

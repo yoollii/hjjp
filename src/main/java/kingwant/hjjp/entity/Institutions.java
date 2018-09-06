@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author ch123
  * @since 2018-08-15
  */
-public class Institution extends Model<Institution> {
+public class Institutions extends Model<Institutions> {
 
     private static final long serialVersionUID = 1L;
 
