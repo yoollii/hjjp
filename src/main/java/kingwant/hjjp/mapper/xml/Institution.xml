@@ -9,11 +9,13 @@
         <result column="des" property="des" />
         <result column="crtime" property="crtime" />
         <result column="orders" property="orders" />
+        <result column="code" property="code" />
+        <result column="tel" property="tel" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, des, crtime, orders
+        id, name, des, crtime, orders, code, tel
     </sql>
 
 </mapper>

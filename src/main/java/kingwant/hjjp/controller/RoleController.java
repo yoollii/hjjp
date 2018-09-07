@@ -43,7 +43,7 @@ public class RoleController {
 	private RoleMapper roleMapper;
 	
 	@PostMapping("/addRole")
-	@ApiOperation(value = "添加角色", notes = "所需参数：name(名字);des(描述)")
+	@ApiOperation(value = "添加角色", notes = "所需参数：name(名字);des(描述);powers(权限)")
 	public PublicResult<Map<String, Object>> addRole(@RequestBody kingwant.hjjp.entity.Role role) {
 		
         if (KwHelper.isNullOrEmpty(role.getName())) {
@@ -78,7 +78,7 @@ public class RoleController {
         if (ComUtil.isEmpty(id)  ) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }        
-		kingwant.hjjp.entity.Role role=roleMapper.selectById(id);        
+		kingwant.hjjp.entity.Role role=roleMapper.selectById(id);
         Map<String, Object> map=new HashMap<>();
         map.put("data", role);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
@@ -100,7 +100,7 @@ public class RoleController {
     }
 
 	@PutMapping("/updateRole")
-	@ApiOperation(value = "修改角色", notes = "所需参数：id(必要，其他的为选填);name(名字);des(描述)")
+	@ApiOperation(value = "修改角色", notes = "所需参数：id(必要，其他的为选填);name(名字);des(描述);powers(权限)")
 	public PublicResult<Map<String, Object>> updateRole(@RequestBody kingwant.hjjp.entity.Role role) {
 		User user4update=new User();
 		if(KwHelper.isNullOrEmpty(role.getId())) {
@@ -115,6 +115,55 @@ public class RoleController {
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 
+	@PostMapping("/changePower")
+	@ApiOperation(value = "添加或者取消权限", notes = "所需参数：rid(角色id);powerId(权限id或者权限code);flag(布尔型，添加或者取消)")
+	public PublicResult<Map<String, Object>> changePower(String rid,String powerId,Boolean flag) {
+		kingwant.hjjp.entity.Role role4temp=roleMapper.selectById(rid);
+		if(role4temp==null) {
+			 return new PublicResult<>("无当前角色", null);
+		}
+		String power=role4temp.getPowers();
+		if(flag) {
+			//新增该权限
+			if(!KwHelper.isNullOrEmpty(power) && power.indexOf(powerId)>=0) {
+				return new PublicResult<>("该角色已拥有该权限", null);
+			}else {
+				String newPower="";
+				if(!KwHelper.isNullOrEmpty(power) && power.length()>0) {
+					newPower=power+","+powerId;
+				}else {
+					newPower=powerId;
+				}
+				power+=power+","+powerId;
+				role4temp.setPowers(newPower);
+				roleMapper.updateById(role4temp);
+				return new PublicResult<>(PublicResultConstant.SUCCESS, null);
+			}
+		}else {
+			//移除该权限
+			int deleteFlag=power.indexOf(powerId);
+			switch (deleteFlag)
+			{
+			    case -1:return new PublicResult<>("该角色当前无该权限", null);
+			    case 0:if(power.indexOf(",")>0) {
+			    	   String newPower=power.replace(powerId+",", "");
+			           role4temp.setPowers(newPower);
+			           roleMapper.updateById(role4temp);
+			           return new PublicResult<>(PublicResultConstant.SUCCESS, null);
+			    }else {
+			    	   String newPower=power.replace(powerId, "");
+			           role4temp.setPowers(newPower);
+			           roleMapper.updateById(role4temp);
+			           return new PublicResult<>(PublicResultConstant.SUCCESS, null);
+					
+				}
+			    default:String newPower1=power.replace(","+powerId, "");
+			           role4temp.setPowers(newPower1);
+			           roleMapper.updateById(role4temp);
+		               return new PublicResult<>(PublicResultConstant.SUCCESS, null);
+			}
+		}
+    }
 
 
 }

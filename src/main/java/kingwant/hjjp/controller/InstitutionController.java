@@ -48,17 +48,21 @@ public class InstitutionController {
 	private InstitutionMapper institutionMapper;
 	
 	@PostMapping("/addInstitution")
-	@ApiOperation(value = "添加机构", notes = "所需参数：name(名字);des(描述),orders(排序)")
-	public PublicResult<Map<String, Object>> addInstitution(@ValidationParam("name,des")@RequestBody JSONObject requestJson) {
+	@ApiOperation(value = "添加机构", notes = "所需参数：name(名字必填);des(描述),orders(排序),code(机构代码必填),tel(机构电话)")
+	public PublicResult<Map<String, Object>> addInstitution(@ValidationParam("name,code")@RequestBody JSONObject requestJson) {
 		String name = requestJson.getString("name");
         String des = requestJson.getString("des");
         Integer orders = requestJson.getInteger("orders");  
+        String code=requestJson.getString("code");
+        String tel=requestJson.getString("tel");
         //参数校验
         Institutions institutions=new Institutions();
         institutions.setId(KwHelper.newID());
         institutions.setName(name);
         institutions.setDes(des);
         institutions.setOrders(orders);
+        institutions.setCode(code);
+        institutions.setTel(tel);
         institutions.setCrtime(new Date());
         institutionMapper.insert(institutions);
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
@@ -93,12 +97,13 @@ public class InstitutionController {
     }
 	
 	@PostMapping("/findList")
-	@ApiOperation(value = "查找机构列表", notes = "所需可选参数：name(机构名称)")
+	@ApiOperation(value = "查找机构列表", notes = "所需可选参数：name(机构名称(模糊)),code(机构代码（精确）)")
 	public PublicResult<Map<String, Object>> findByList(@RequestBody Institutions institutions) {
         //参数校验
 		EntityWrapper<Institutions> ew=new EntityWrapper<Institutions>();
 	    ew.setEntity(new Institutions());
 		ew.like(!KwHelper.isNullOrEmpty(institutions.getName()), "name", institutions.getName());
+		ew.eq(!KwHelper.isNullOrEmpty(institutions.getCode()), "code", institutions.getCode());
 		ew.orderBy("crtime", false);
 		List<Institutions> list = institutionMapper.selectList(ew);        
         Map<String, Object> map=new HashMap<>();
@@ -107,7 +112,7 @@ public class InstitutionController {
     }
 
 	@PutMapping("/updateInstitutions")
-	@ApiOperation(value = "修改机构", notes = "所需参数：id(必要，其他的为选填);name(名字);des(描述),orders(排序)")
+	@ApiOperation(value = "修改机构", notes = "所需参数：id(必要，其他的为选填);name(名字);des(描述),orders(排序),code(代码),tel(电话)")
 	public PublicResult<Map<String, Object>> updateUser(@RequestBody Institutions institutions) {
 		if(KwHelper.isNullOrEmpty(institutions.getId())) {
 			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);

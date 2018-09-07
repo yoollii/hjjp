@@ -22,9 +22,18 @@ public class Role extends Model<Role> {
     private String name;
     private String des;
     private Date crtime;
+    private String powers;
 
 
-    public Date getCrtime() {
+    public String getPowers() {
+		return powers;
+	}
+
+	public void setPowers(String powers) {
+		this.powers = powers;
+	}
+
+	public Date getCrtime() {
 		return crtime;
 	}
 

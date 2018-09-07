@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.activerecord.Model;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -23,6 +22,24 @@ public class Institutions extends Model<Institutions> {
     private String des;
     private Date crtime;
     private Integer orders;
+    private String code;
+    public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	private String tel;
 
 
     public Integer getOrders() {

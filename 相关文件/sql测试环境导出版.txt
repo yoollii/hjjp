@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : mysql
+Source Server         : 253
 Source Server Version : 50717
 Source Host           : 192.168.1.253:3306
 Source Database       : hdpt
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-06 09:13:45
+Date: 2018-09-07 19:51:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,10 +34,9 @@ CREATE TABLE `applicationsystem` (
 -- ----------------------------
 -- Records of applicationsystem
 -- ----------------------------
-INSERT INTO `applicationsystem` VALUES ('17d54507d0f24902bf4b1d8fb63e1324', 'str000', '2121', 'fs', '45', '187505', '0', '2018-09-05 17:22:04');
-INSERT INTO `applicationsystem` VALUES ('4f64cd732f664b4f8a10ea0471cdace5', '12133', '111', '123', '12312', '185016', '0', '2018-09-04 11:06:43');
-INSERT INTO `applicationsystem` VALUES ('55fadfed83a94071a4e7b06c52d32a61', '33434', '34', '34', '34', '185018', '0', '2018-09-04 15:06:21');
-INSERT INTO `applicationsystem` VALUES ('f782f43365b5454ebc481dcff835d320', 'str000', '2121', 'wsf', '45', '185016', '0', '2018-09-05 16:55:23');
+INSERT INTO `applicationsystem` VALUES ('1bbcb20807484ce2b070c7ed8e1f5dbc', 'str000', '2121', '11', '111', '200005', '0', '2018-09-06 16:43:23');
+INSERT INTO `applicationsystem` VALUES ('7c1c3fdabf3d46719766fe9055585fbf', 'd', '2121', '3', '45', '205005', '0', '2018-09-06 18:02:17');
+INSERT INTO `applicationsystem` VALUES ('fe9fb377f8504aaa894d4adda9aabcfa', 'yoollii', '2121', '111', '45', '200008', '0', '2018-09-06 16:21:19');
 
 -- ----------------------------
 -- Table structure for flowmodel
@@ -76,20 +75,23 @@ INSERT INTO `flowmodel` VALUES ('ea01e635420349dfb27b43f879e402b8', 'd', '1', '1
 INSERT INTO `flowmodel` VALUES ('efa289ca1ae943c2a09ba028b5445a7d', 'yoollii', '1', '管理员', '123213', null, null);
 
 -- ----------------------------
--- Table structure for institution
+-- Table structure for institutions
 -- ----------------------------
-DROP TABLE IF EXISTS `institution`;
-CREATE TABLE `institution` (
+DROP TABLE IF EXISTS `institutions`;
+CREATE TABLE `institutions` (
   `id` varchar(32) DEFAULT NULL,
   `name` varchar(32) DEFAULT NULL,
   `des` varchar(128) DEFAULT NULL,
   `crtime` datetime DEFAULT NULL,
-  `orders` int(8) DEFAULT NULL
+  `orders` int(8) DEFAULT NULL,
+  `code` varchar(32) DEFAULT NULL,
+  `tel` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of institution
+-- Records of institutions
 -- ----------------------------
+INSERT INTO `institutions` VALUES ('3d67584fec6947c7ab17389251d1cc51', 'qwqwqwqw', '描述123avx', '2018-09-06 16:12:47', '1', null, null);
 
 -- ----------------------------
 -- Table structure for powers
@@ -161,6 +163,10 @@ CREATE TABLE `propertyconfig` (
 -- ----------------------------
 -- Records of propertyconfig
 -- ----------------------------
+INSERT INTO `propertyconfig` VALUES ('225e17e1c6e64dbc93c823df8aa434bc', 'string', 'string', 'string', 'string', 'string', 'string', 'string', '2018-09-07 16:26:48');
+INSERT INTO `propertyconfig` VALUES ('405f020d10824558a06e3d20a088e3b8', 'string', 'string', 'string', 'string', 'string', 'string', 'string', '2018-09-07 16:26:48');
+INSERT INTO `propertyconfig` VALUES ('4c9058be469c4d4a87f44b453f61c690', 'string', 'string', 'string', 'b5882d9cb64c433eb8cd507bdee769dc', 'string', 'string', 'string', '2018-09-07 17:32:47');
+INSERT INTO `propertyconfig` VALUES ('a603f7477d054a52acae53d0817453d1', 'string', 'string', 'string', 'string', 'string', 'string', 'string', '2018-09-07 16:26:34');
 
 -- ----------------------------
 -- Table structure for role
@@ -171,17 +177,18 @@ CREATE TABLE `role` (
   `name` varchar(32) DEFAULT NULL,
   `des` varchar(128) DEFAULT NULL,
   `crtime` datetime DEFAULT NULL,
+  `powers` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES ('39a334d626d74c5396b0fef436877bc5', 'Baidu', '11111111', null);
-INSERT INTO `role` VALUES ('71b9b547d4fe42ada9930c2e2966002d', '测试角色', '角色说明', null);
-INSERT INTO `role` VALUES ('725d820288a349fe9bb743dfdc1a976c', '测试角色名称', '456', null);
-INSERT INTO `role` VALUES ('734eeb01e8b64175815ad1e725ab26d6', '测试角色1111', '测试', null);
-INSERT INTO `role` VALUES ('c12ddc222a5f43589815e7a2ae7947e3', 'yoollii', '123213', null);
+INSERT INTO `role` VALUES ('111', '111', '11111111', null, '2,4,5,6,7,8,11');
+INSERT INTO `role` VALUES ('123', '测试角色名称', '456', null, '2,4,8,11');
+INSERT INTO `role` VALUES ('71b9b547d4fe42ada9930c2e2966002d', '测试角色', '角色说明', null, null);
+INSERT INTO `role` VALUES ('734eeb01e8b64175815ad1e725ab26d6', '测试角色1111', '测试', null, null);
+INSERT INTO `role` VALUES ('c12ddc222a5f43589815e7a2ae7947e3', 'yoollii', '123213', null, null);
 
 -- ----------------------------
 -- Table structure for ser
@@ -203,8 +210,8 @@ CREATE TABLE `ser` (
 -- Records of ser
 -- ----------------------------
 INSERT INTO `ser` VALUES ('1d8d80422a184de6ba035875aff1dbfe', 'str000', '0', '11', null, '11', 'http://tech.ifeng.com/a/20171016/44716495_0.shtml', '2018-09-05 12:10:28');
-INSERT INTO `ser` VALUES ('1eeca3b340894a8cb01755811a4ee9cb', 'yoollii', '0', '66', null, '3', 'http://tech.ifeng.com/a/20171016/44716495_0.shtml', '2018-09-05 11:59:27');
 INSERT INTO `ser` VALUES ('9ea93b62321f48d8ab10ace3bbe57726', 'Baidu', '1', 'dfdf', null, '3', 'http://mini.eastday.com/mobile/170321223520608.html#', '2018-09-05 12:02:31');
+INSERT INTO `ser` VALUES ('b5882d9cb64c433eb8cd507bdee769dc', 'yoollii', '1', '11', null, '3', 'http://tech.ifeng.com/a/20171016/44716495_0.shtml', '2018-09-06 09:26:20');
 
 -- ----------------------------
 -- Table structure for user
@@ -217,19 +224,38 @@ CREATE TABLE `user` (
   `groupName` varchar(32) DEFAULT NULL,
   `rid` varchar(32) DEFAULT NULL,
   `crtime` datetime DEFAULT NULL,
+  `password` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('018b7a198d154f05a17e95e1aa91702b', 'yoollii', '0', '1组', '725d820288a349fe9bb743dfdc1a976c', '2018-08-09 09:53:57');
-INSERT INTO `user` VALUES ('111', '222', '1', '1组', '725d820288a349fe9bb743dfdc1a976c', '2018-08-15 09:54:00');
-INSERT INTO `user` VALUES ('3042a019f69d4f80906ad6c16cf7600a', 'yoolliiewewr', '1', '1组', '39a334d626d74c5396b0fef436877bc5', '2018-09-04 18:35:55');
-INSERT INTO `user` VALUES ('3df22ef3d5b64648912d3959c171795d', 'sssss', '1', '2组', '71b9b547d4fe42ada9930c2e2966002d', '2018-08-15 09:54:08');
-INSERT INTO `user` VALUES ('6cbb8a448e7f467ea69f0d5a2702d8ee', '123', '1', '1组', '39a334d626d74c5396b0fef436877bc5', '2018-08-01 09:54:14');
-INSERT INTO `user` VALUES ('dd9c5a21d7644f24b440ef0824cbe672', 'qqqqqq', '1', '2组', '71b9b547d4fe42ada9930c2e2966002d', '2018-08-28 09:54:23');
-INSERT INTO `user` VALUES ('f53dbc96b4724085b627bac914d44206', 'Baidu', '1', '2组', '39a334d626d74c5396b0fef436877bc5', '2018-08-31 17:13:25');
+INSERT INTO `user` VALUES ('018b7a198d154f05a17e95e1aa91702b', 'yoollii', '0', '1组', '725d820288a349fe9bb743dfdc1a976c', '2018-08-09 09:53:57', null);
+INSERT INTO `user` VALUES ('111', '222', '1', '1组', '725d820288a349fe9bb743dfdc1a976c', '2018-08-15 09:54:00', null);
+INSERT INTO `user` VALUES ('3042a019f69d4f80906ad6c16cf7600a', 'ho', '1', '1组', '39a334d626d74c5396b0fef436877bc5', '2018-09-04 18:35:55', null);
+INSERT INTO `user` VALUES ('3df22ef3d5b64648912d3959c171795d', 'sssss', '1', '2组', '71b9b547d4fe42ada9930c2e2966002d', '2018-08-15 09:54:08', null);
+INSERT INTO `user` VALUES ('6cbb8a448e7f467ea69f0d5a2702d8ee', '123', '1', '1组', '123', '2018-08-01 09:54:14', null);
+INSERT INTO `user` VALUES ('94b7a501ef5f4f1b878a94d0704e8ccc', '2222', '1', '分组e', '123', '2018-09-07 17:24:26', null);
+INSERT INTO `user` VALUES ('dd9c5a21d7644f24b440ef0824cbe672', 'qqqqqq', '1', '2组', '71b9b547d4fe42ada9930c2e2966002d', '2018-08-28 09:54:23', null);
+INSERT INTO `user` VALUES ('f53dbc96b4724085b627bac914d44206', 'ho', '1', '2组', '39a334d626d74c5396b0fef436877bc5', '2018-08-31 17:13:25', null);
+
+-- ----------------------------
+-- Table structure for userinstitution
+-- ----------------------------
+DROP TABLE IF EXISTS `userinstitution`;
+CREATE TABLE `userinstitution` (
+  `id` varchar(32) DEFAULT NULL,
+  `uid` varchar(32) DEFAULT NULL,
+  `iid` varchar(32) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of userinstitution
+-- ----------------------------
+INSERT INTO `userinstitution` VALUES ('c80f85faf3f4425bbdb1c5aff765c3b2', '3042a019f69d4f80906ad6c16cf7600a', '3d67584fec6947c7ab17389251d1cc51');
+INSERT INTO `userinstitution` VALUES ('c43ec2c1e5f54e9cac56b5825b5ea0b5', '1803b4c83bc248bfacfc65039cf8d52c', 'c80f85faf3f4425bbdb1c5aff765c3b2');
+INSERT INTO `userinstitution` VALUES ('47dcdbdf3a2d48c4b5fa3777cbed301a', 'f53dbc96b4724085b627bac914d44206', '3d67584fec6947c7ab17389251d1cc51');
 
 -- ----------------------------
 -- Table structure for userrole

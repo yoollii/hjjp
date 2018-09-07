@@ -19,16 +19,25 @@ import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.annotation.ValidationParam;
+import kingwant.hjjp.entity.Powers;
+import kingwant.hjjp.entity.Role;
 import kingwant.hjjp.entity.User;
 import kingwant.hjjp.entity.Userinstitution;
+import kingwant.hjjp.mapper.PowersMapper;
+import kingwant.hjjp.mapper.RoleMapper;
 import kingwant.hjjp.mapper.UserMapper;
 import kingwant.hjjp.mapper.UserinstitutionMapper;
 import kingwant.hjjp.util.KwHelper;
+import scala.collection.mutable.LinkedList;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.quartz.impl.jdbcjobstore.AttributeRestoringConnectionInvocationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -50,24 +59,37 @@ public class UserController {
 	private UserMapper userMapper;
 	@Autowired
 	private UserinstitutionMapper userinstitutionMapper;
+	@Autowired
+	private RoleMapper roleMapper;
+	@Autowired
+	private PowersMapper powersMapper;
 	
 	@PostMapping("/addUser")
-	@ApiOperation(value = "添加用户", notes = "所需参数：name(名字);state(状态),group(分组名),rid(角色id),institutionsId(机构id)")
+	@ApiOperation(value = "添加用户", notes = "所需参数：name(名字);state(状态),group(分组名),rid(角色id),institutionsId(机构id),password(密码)")
 	public PublicResult<Map<String, Object>> addUser(@ValidationParam("name,state,group,rid")@RequestBody JSONObject requestJson) {
 		String name = requestJson.getString("name");
         int state = requestJson.getInteger("state");
         String group = requestJson.getString("group");  
         String rid = requestJson.getString("rid");
+        String password = requestJson.getString("password");
         //参数校验
         if (ComUtil.isEmpty(name) || ComUtil.isEmpty(state)|| ComUtil.isEmpty(group)) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
+        EntityWrapper<User> ew=new EntityWrapper<User>();
+	    ew.setEntity(new User());
+	    ew.eq(!KwHelper.isNullOrEmpty(name), "name", name);
+	    List<User> list = userMapper.selectList(ew); 
+	    if(!KwHelper.isNullOrEmpty(list) && list.size()>0) {
+	    	return new PublicResult<>("当前用户名已存在！！", null);
+	    }
         User user=new User();
 		user.setId(KwHelper.newID());
 		user.setName(name);
 		user.setState(state);
 		user.setGroupName(group);
 		user.setRid(rid);
+		user.setPassword(password);
 		user.setCrtime(new Date());
 		userMapper.insert(user);
 		
@@ -111,6 +133,43 @@ public class UserController {
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
     }
 	
+	@PostMapping("/userLogin")
+	@ApiOperation(value = "查找用户", notes = "所需参数：name(用户名)，password(密码)")
+	public PublicResult<Map<String, Object>> userLogin(@ValidationParam("name,password")@RequestBody JSONObject requestJson) {
+		String name = requestJson.getString("name");
+		String password = requestJson.getString("password");
+        //参数校验
+        if (ComUtil.isEmpty(name) ) {
+            return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
+        }
+        EntityWrapper<User> ew=new EntityWrapper<User>();
+	    ew.setEntity(new User());
+	    ew.eq(!KwHelper.isNullOrEmpty(name), "name", name);
+	    ew.eq(!KwHelper.isNullOrEmpty(password), "password", password);
+	    List<User> list = userMapper.selectList(ew);
+	    if(KwHelper.isNullOrEmpty(list)) {
+	    	return new PublicResult<>("无当前用户！！", null);
+	    }
+	    User user=list.get(0);
+	    Role role=new Role();
+	    List<Powers> powers=new java.util.LinkedList<>();
+	    if(!KwHelper.isNullOrEmpty(user.getRid())) {
+	    	role=roleMapper.selectById(user.getRid());
+	    }
+	    if(!KwHelper.isNullOrEmpty(role.getPowers())) {
+	    	String[] ids=role.getPowers().split(",");
+	    	for(int i=0;i<ids.length;i++) {
+	    		powers.add(powersMapper.selectById(ids[i]));
+	    	}
+	    }
+	    Map<String, Object> map=new HashMap<>();
+        map.put("user", user);	
+        map.put("role", role);		
+        map.put("powers", powers);		
+
+        return new PublicResult<>(PublicResultConstant.SUCCESS, map);	
+    }
+	
 	@PostMapping("/findList")
 	@ApiOperation(value = "查找用户列表", notes = "所需可选参数：name(用户名称),state(用户状态),groupName(分组名称),rid(角色id)")
 	public PublicResult<Map<String, Object>> findByList(@RequestBody User user) {
@@ -134,17 +193,45 @@ public class UserController {
     }
 
 	@PutMapping("/updateUser")
-	@ApiOperation(value = "修改用户", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态),groupName(分组名),rid(角色id)")
-	public PublicResult<Map<String, Object>> updateUser(@RequestBody User user) {
+	@ApiOperation(value = "修改用户", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态),groupName(分组名),rid(角色id),institutionsId(机构id),password(用户密码)")
+	public PublicResult<Map<String, Object>> updateUser(@RequestBody JSONObject requestJson) {
 		User user4update=new User();
-		if(KwHelper.isNullOrEmpty(user.getId())) {
+		try {
+			BeanUtils.copyProperties(user4update, requestJson);
+		} catch (IllegalAccessException | InvocationTargetException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(KwHelper.isNullOrEmpty(user4update.getId())) {
 			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
 		}
 		try {
-			userMapper.updateById(user);
+			userMapper.updateById(user4update);
 		} catch (Exception e) {
 			return new PublicResult<>(PublicResultConstant.SQL_EXCEPTION, null);
 			// TODO: handle exception
+		}
+		String  institutionsId = requestJson.getString("institutionsId");
+		if(!KwHelper.isNullOrEmpty(institutionsId) && !institutionsId.equals("-1")) {
+//			Userinstitution userinstitution=new Userinstitution();
+//			userinstitution.setIid(institutionsId);
+//			userinstitution.setUid(user.getId());
+			EntityWrapper<Userinstitution> ew=new EntityWrapper<Userinstitution>();
+		    ew.setEntity(new Userinstitution());
+		    ew.eq(!KwHelper.isNullOrEmpty(user4update.getId()), "uid", user4update.getId());
+//		    ew.eq(!KwHelper.isNullOrEmpty(institutionsId), "iid",institutionsId);
+		    List<Userinstitution> list = userinstitutionMapper.selectList(ew);  
+		    if(!KwHelper.isNullOrEmpty(list) && list.size()>0) {
+		    	Userinstitution userin4update=list.get(0);
+		    	userin4update.setIid(institutionsId);
+		    	userinstitutionMapper.updateById(userin4update);
+		    }else {
+		    	Userinstitution userin4add=new Userinstitution();
+		    	userin4add.setIid(institutionsId);
+		    	userin4add.setUid(user4update.getId());
+		    	userin4add.setId(KwHelper.newID());
+		    	userinstitutionMapper.insert(userin4add);
+			}
 		}
         return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }

@@ -24,9 +24,18 @@ public class User extends Model<User> {
     private String groupName;
     private String rid;
     private Date crtime;
+    private String password;
 
 
-    public Date getCrtime() {
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Date getCrtime() {
 		return crtime;
 	}
 
