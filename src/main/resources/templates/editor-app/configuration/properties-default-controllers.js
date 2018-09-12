@@ -114,9 +114,29 @@ var KisBpmTextPropertyCtrl = [ '$scope', '$modal', function($scope, $modal) {
     $modal(opts);
 }];
 
-var KisBpmTextPropertyPopupCtrl = ['$scope', function($scope) {
-    
-    $scope.save = function() {
+var KisBpmTextPropertyPopupCtrl = ['$scope','$http', function($scope,$http) {
+	     $http(
+	  		  {
+	  			    url: "http://hjj.ngrok.michaelch.xyz/ser/findList",
+					// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+					cache:false,
+					async:false,
+					method: "POST",
+					data:'{}',
+					headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+						
+		           }
+	  	   ).
+	  	   success(function(data){
+	  		  console.log(data);
+	  		$scope.dataSet=data.data.data;
+	  	   })
+	
+	
+	
+	
+    $scope.save = function() {	
+	    	 /*console.log($scope.property.value);*/
         $scope.updatePropertyInModel($scope.property);
         $scope.close();
     };

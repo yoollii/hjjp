@@ -36,14 +36,25 @@
 
 				</div>
 				<div class="form-group">
-					<label for="real_coll">选择候选人</label>
+					<label for="real_coll">配置属性</label>
 					<input  id="groupField" class="form-control"
-						type='text' style='display:none' ng-model="assignment.candidateGroups[0].value"
+						type='text' ng-value='dataid'  style='display:none' ng-model="assignment.candidateGroups[0].value"
 					/>
-					<input id='real-coll' class='form-control' ng-model="assignment.candidateTrueUsers" ng-click="xxx()" ></input>
-					<input id="temp" type='text' style='display:none' ng-model="assignment.candidateGroups[0].value" class='form-control'></input>
-				
-					
+					<p style='padding:5px'>
+					  <label style='width:100px' for="">流程数据映射</label>
+					  <input id="dateMap" type='text' ng-model="dateMap" class='' />
+					</p>
+					<p style='padding:5px'>
+					  <label style='width:100px' for="">输入配置</label>
+					  <input id="inConfig" type='text' ng-model="inConfigArr" class='' />
+					</p>
+					<p style='padding:5px'>
+					  <label style='width:100px' for="">输出配置</label>
+					  <input id="outConfig" type='text' ng-model="outConfigArr" class='' />
+					</p>
+			  		
+					<!-- <input id='real-coll' class='form-control' ng-model="assignment.candidateTrueUsers" ng-click="xxx()" />-->
+					<input id="temp" type='text' style='display:none' ng-model="assignment.candidateGroups[0].value" class='form-control' />
 				</div>
 
 			</div>

@@ -591,16 +591,22 @@ angular.module('activitiModeler')
         /* Click handler for clicking a property */
           $scope.propertyClicked = function (index) {
         	  
-        	 // console.log($scope.selectedItem.properties);
-        	  // alert( document.getElementById("key").value);
+      	 console.log($scope.selectedItem.properties);
+//        	 alert( document.getElementById("key").value);
         	// key oryx-fieldpower index==18
         	  
         	  // oryx-usertaskassignment
         	  
         	  // 点击代理触发事件
         	if($scope.selectedItem.properties[index].key=="oryx-usertaskassignment"){
-        		var pNode=$scope.selectedItem.properties[index].value!='';
-        		if(pNode){
+        		var serviceId=$scope.selectedItem.properties[9].value;
+        		if(serviceId){
+        			
+        		}else{
+        			alert("未选择服务");
+        			return;
+        		}
+        		/*if(pNode){
         			
         			if($scope.selectedItem.properties[index].value.assignment.candidateGroups[0]!=undefined &&
         					$scope.selectedItem.properties[index].value.assignment.candidateGroups[0]!=null){
@@ -623,7 +629,7 @@ angular.module('activitiModeler')
 		            		   $scope.pop=false;
 		            	   })
         		}
-        	}
+        	}*/
         	}
         	  
         	if($scope.selectedItem.properties[index].key=="oryx-fieldpower"){
