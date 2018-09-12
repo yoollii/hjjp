@@ -1,11 +1,13 @@
 package kingwant.hjjp.controller;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 import io.swagger.annotations.Api;
@@ -23,6 +26,7 @@ import kingwant.hjjp.annotation.ValidationParam;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.entity.Propertyconfig;
+import kingwant.hjjp.entity.User;
 import kingwant.hjjp.mapper.PropertyconfigMapper;
 import kingwant.hjjp.util.ComUtil;
 import kingwant.hjjp.util.KwHelper;
@@ -46,15 +50,25 @@ public class PropertyconfigController {
 	
 	@PostMapping("/addProperty")
 	@ApiOperation(value = "添加属性设置", notes = "所需参数：dateMap(流程数据映射);inConfig(输入配置);outConfig(输出配置);serId(服务id);modelId(模型id);flowId(流程id);taskId(taskId流程中需要)")
-	public PublicResult<Map<String, Object>> addProperty(@ValidationParam("dateMap,inConfig,outConfig")@RequestBody Propertyconfig propertyconfig) {
-        if (ComUtil.isEmpty(propertyconfig.getDataMap()) || ComUtil.isEmpty(propertyconfig.getInConfig())
+	public PublicResult<Map<String, Object>> addProperty(@ValidationParam("dateMap,inConfig,outConfig")@RequestBody JSONObject requestJson) {
+		Propertyconfig propertyconfig=new Propertyconfig();
+		try {
+			BeanUtils.copyProperties(propertyconfig, requestJson);
+			propertyconfig.setDataMap(requestJson.getString("dateMap"));
+		} catch (IllegalAccessException | InvocationTargetException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if (ComUtil.isEmpty(propertyconfig.getDataMap()) || ComUtil.isEmpty(propertyconfig.getInConfig())
         		|| ComUtil.isEmpty(propertyconfig.getOutConfig())) {
             return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);
         }
         propertyconfig.setCrtime(new Date());
         propertyconfig.setId(KwHelper.newID());
         propertyconfigMapper.insert(propertyconfig);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, null);		
+        Map<String, Object> map=new HashMap<>();
+        map.put("data",  propertyconfig.getId());
+        return new PublicResult<>(PublicResultConstant.SUCCESS, map);		
     }
 	
 	@DeleteMapping("/delById")
