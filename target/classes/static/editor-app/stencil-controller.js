@@ -599,7 +599,7 @@ angular.module('activitiModeler')
         	  
         	  // 点击代理触发事件
         	if($scope.selectedItem.properties[index].key=="oryx-usertaskassignment"){
-        		var serviceId=$scope.selectedItem.properties[9].value;
+        		var serviceId=$scope.selectedItem.properties[2].value;
         		if(serviceId){
         			
         		}else{
