@@ -40,12 +40,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
 import kingwant.hjjp.entity.User;
 import kingwant.hjjp.service.ACTTaskService;
+import kingwant.hjjp.util.KwHelper;
 import kingwant.hjjp.util.Page;
 import kingwant.hjjp.util.PageUtil;
 import xyz.michaelch.mchtools.hepler.BeanHelper;
@@ -153,9 +156,9 @@ public class ActivitiController {
 	 * @param model
 	 * @return String
 	 */
-	@ApiOperation(value = "查找模型列表", notes = "所需参数：name(名称);key(表单名称)")
+	@ApiOperation(value = "查找模型列表", notes = "所需参数：name(名称);key(表单名称);modType(1（第一步模型），2（第二部模型）)")
 	@PostMapping(value = "modelList")
-	public PublicResult<Map<String, Object>> modelList(HttpServletRequest request, Model model,String name,String key) {
+	public PublicResult<Map<String, Object>> modelList(HttpServletRequest request, Model model,String name,String key,String modType) {
 		// 差一个条件
 		Page<org.activiti.engine.repository.Model> page = new Page<org.activiti.engine.repository.Model>(
 				PageUtil.PAGE_SIZE);
@@ -181,11 +184,21 @@ public class ActivitiController {
 		}
 		query.orderByModelKey().desc();
 		List<org.activiti.engine.repository.Model> list = query2.list();
+//		List<org.activiti.engine.repository.Model> modList =new  ArrayList<>();
+		List<org.activiti.engine.repository.Model> resultList=new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			org.activiti.engine.repository.Model  model2=list.get(i);
+			 String  modinfo = model2.getMetaInfo();
+			 JSONObject json = JSONObject.parseObject(modinfo);
+			if(!KwHelper.isNullOrEmpty(json.getString("modType")) && json.getString("modType").equals(modType)) {
+				resultList.add(list.get(i));
+			}
+		}
 //				listPage(pageParams[0], pageParams[1]);
 		page.setTotalCount(query.count());
 		page.setResult(list);
 		Map<String, Object> map=new HashMap<>();
-        map.put("data", list);
+        map.put("data", resultList);
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
 //		
 //		model.addAttribute("list", page.getResult());

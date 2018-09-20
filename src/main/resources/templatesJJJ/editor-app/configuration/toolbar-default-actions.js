@@ -377,14 +377,15 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
             name: $scope.saveDialog.name,
             description: $scope.saveDialog.description
         };
-
         debugger;
         // Update
         $http({    method: 'PUT',
             data: params,
             ignoreErrors: true,
             headers: {'Accept': 'application/json',
-                      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    	  //'Content-Type':'application/json; charset=UTF-8'
+                    	  },
             transformRequest: function (obj) {
                 var str = [];
                 for (var p in obj) {

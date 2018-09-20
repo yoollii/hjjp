@@ -26,6 +26,24 @@ public class Ser extends Model<Ser> {
     private Integer urlFlag;
     private String url;
     private Date crtime;
+    private Integer inNum;
+    public Integer getInNum() {
+		return inNum;
+	}
+
+	public void setInNum(Integer inNum) {
+		this.inNum = inNum;
+	}
+
+	public Integer getOutNum() {
+		return outNum;
+	}
+
+	public void setOutNum(Integer outNum) {
+		this.outNum = outNum;
+	}
+
+	private Integer outNum;
 
 
     public Date getCrtime() {

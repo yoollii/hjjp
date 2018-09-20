@@ -12,11 +12,13 @@
         <result column="urlFlag" property="urlFlag" />
         <result column="url" property="url" />
         <result column="crtime" property="crtime" />
+        <result column="inNum" property="inNum" />
+        <result column="outNum" property="outNum" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, state, des, orders, urlFlag, url, crtime
+        id, name, state, des, orders, urlFlag, url, crtime, inNum, outNum
     </sql>
 
 </mapper>

@@ -42,7 +42,7 @@ public class SerController {
 	private SerMapper serMapper;
 	
 	@PostMapping("/addSer")
-	@ApiOperation(value = "添加服务", notes = "所需参数：name(名字);state(状态);des(描述);oeders(排序);urlFlag(路径标识);url(路径地址)")
+	@ApiOperation(value = "添加服务", notes = "所需参数：name(名字);state(状态);des(描述);orders(排序);urlFlag(路径标识);url(路径地址);inNum;outNum")
 	public PublicResult<Map<String, Object>> addSer(@ValidationParam("name,state,group")@RequestBody Ser ser) {
 		        
         if (ComUtil.isEmpty(ser.getName())) {
@@ -101,7 +101,7 @@ public class SerController {
     }
 
 	@PutMapping("/updateSer")
-	@ApiOperation(value = "修改服务", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态);des(备注);orders(排序);urlFlag(连接标识),url(路径)")
+	@ApiOperation(value = "修改服务", notes = "所需参数：id(必要，其他的为选填);name(名字);state(状态);des(备注);orders(排序);urlFlag(连接标识),url(路径),inNum,outNum")
 	public PublicResult<Map<String, Object>> updateSer(@RequestBody Ser ser) {
 		if(KwHelper.isNullOrEmpty(ser.getId())) {
 			return new PublicResult<>(PublicResultConstant.MiSSING_KEY_PARAMETERS_ERROR, null);

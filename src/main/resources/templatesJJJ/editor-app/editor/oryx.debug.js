@@ -10943,16 +10943,19 @@ ORYX.Editor = {
 		var max = 1;
 		function getStartIndex(_model){
 			if(_model.childShapes && _model.childShapes.length>0){
-				model.childShapes.forEach(function(cell){getStartIndex(cell)});
+				_model.childShapes.forEach(function(cell){
+					taskId = cell.properties["overrideid"];
+						if(!taskId){
+							taskId="";
+						}	
+						//if(!taskId)return;					
+						var index = Number(taskId.substring(4));
+						if(index>max){
+							max = index;
+						}
+					getStartIndex(cell);
+				});
 			}
-			
-			var taskId = _model.properties["overrideid"];
-			if(!taskId)return;				
-			var index = parseInt(taskId.replace("task",""));
-			if( !isNaN(index) && index>max){
-				max = index;
-			}
-			
 		}
 		
 		// LOAD the content of the current editor instance
@@ -10961,7 +10964,11 @@ ORYX.Editor = {
             this.getCanvas().update();
 			loadContentFinished = true;
 			initFinished();
-			getStartIndex(model);
+		//	for(var i=0;i<model.childShapes.length;i++){
+				
+                getStartIndex(model);
+		//	}
+			
 			this.taskIdIndex = max;
 		}.bind(this), 200);
 	},
@@ -11989,6 +11996,7 @@ ORYX.Editor = {
 		
 		if(newShapeObject.properties["oryx-overrideid"]==""){
 			newShapeObject.setProperty("oryx-overrideid","task"+ (++this.taskIdIndex));
+			console.log(this.taskIdIndex);
 		}
 		
 		if(con && con.alignDockers) {

@@ -69,38 +69,86 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
 /*	if($scope.selectedItem.properties[5].value!=""){
 		var propertyId=$scope.selectedItem.properties[5].value.assignment.candidateGroups[0].value;
 	}*/
-//	if(proId){
-//		$http({
-//		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/findList",
-//			// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
-//			cache:false,
-//			async:false,
-//			method: "POST",
-//			data:{'serId':serviceId},
-//			headers : { 'Content-Type': 'application/json;charset=UTF-8' }
-//	       }
-//	   ).success(function(data){
-//		   if(data.result==="0000"){
-//			   $scope.dateMap=data.data.data[0].dataMap;
-//				  $scope.outConfigArr=data.data.data[0].outConfig;
-//				  $scope.inConfigArr = data.data.data[0].inConfig;
-//				  proId= data.data.data[0].id;
-//				  $scope.assignment.candidateGroups = [{value: data.data.data[0].id }];
-//				  debugger
-//				  flag=false;
-//		   }
-//	   }).error(function(data,header,config,status){
-//		    //处理响应失败
-//		   if(header=="404"){
-//			   alert("服务器错误，请联系管理员！")
-//		   }
-//	   });
-//	}
 		
-	if(proId){
+	var allList=$scope.editor.getJSON().childShapes;
+	var currentId=$scope.selectedShape.resourceId;
+	var parent1;	//子流程
+	var parent2;	//连接子流程的线
+	var parent3;	//当前节点
+	var parent4;	//连接当前节点的线
+	var parent5; 	//上一节点与子节点的连线
+	var parent6;	//上一个子流程
+	var parent7;	//上一个服务节点的属性Id
+	// console.log(allList);
+	allList.forEach(element => {
+		if(element.childShapes.length!=0){
+			if (element.childShapes[0].resourceId===currentId) {
+				parent1=element.resourceId;
+			}
+		}
+	});
+	allList.forEach(element => {
+		if(element.target){
+			if (element.target.resourceId===parent1) {
+				parent2=element.resourceId;
+			}
+		}
+	});
+	allList.forEach(element => {
+		if(element.outgoing.length!=0){
+			element.outgoing.forEach(element1 => {
+				if (element1.resourceId===parent2) {
+					parent3=element.resourceId;
+				}
+			});
+		}
+	});
+	allList.forEach(element => {
+		if(element.target){
+			if (element.target.resourceId===parent3) {
+				parent4=element.resourceId;
+			}
+		}
+	});
+	allList.forEach(element => {
+		if(element.outgoing.length!=0){
+			element.outgoing.forEach((element1, index, array) => {
+				if (element1.resourceId===parent4) {
+					if (element.stencil.id==="StartNoneEvent") {
+						parent7="StartNoneEvent";
+					}
+					if(array.filter(item => item.resourceId!=parent4).length!=0){
+						parent5=array.filter(item => item.resourceId!=parent4)[0].resourceId;
+					}
+				}
+			});
+		}
+	});
+	allList.forEach(element => {
+		if (element.resourceId===parent5) {
+			parent6=element.outgoing[0].resourceId;
+		}
+	});
+	allList.forEach(element => {
+		if (element.resourceId===parent6) {
+			console.log(element.properties.overrideid);
+			if(element.childShapes.length!=0){
+				if(element.childShapes[0].properties.usertaskassignment==""){
+					return;
+				}else{
+					parent7=element.childShapes[0].properties.usertaskassignment.assignment.candidateGroups[0].value;
+				}
+			}
+		}
+	});
+	 var outConfigArr=[];
+	 var inConfigArr=[];
+	 var frontOutConfigArr=[];
+	if(parent7==undefined){
+		alert("请先选择上一节点的服务且配置其属性");
+	}else if(parent7!="StartNoneEvent"){
 		$http({
-		    url: "http://hjj.ngrok.michaelch.xyz//propertyconfig/findById?id="+proId,
-			// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/findById?id="+parent7,
 			cache:false,
 			async:false,
 			method: "GET",
@@ -108,9 +156,8 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
 	       }
 	   ).success(function(data){
 		   if(data.result==="0000"){
-			   $scope.dateMap=data.data.data.dataMap;
-			   $scope.outConfigArr=data.data.data.outConfig;
-			   $scope.inConfigArr = data.data.data.inConfig;
+			   frontOutConfigArr=data.data.data.outConfig.split("|");
+			   findNum();
 		   }
 	   }).error(function(data,header,config,status){
 		    //处理响应失败
@@ -118,6 +165,83 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
 			   alert("服务器错误，请联系管理员！")
 		   }
 	   });
+	}else if (parent7=="StartNoneEvent") {
+		findNum();
+	}
+	//  console.log(parent7);
+	 // 获取服务中的输入输出个数
+	 function findNum() {
+		 $http({
+			url: "http://hjj.ngrok.michaelch.xyz/ser/findById?id="+serviceId,
+			cache:false,
+			async:false,
+			method: "GET",
+			headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+			}
+		).success(function(data){
+			if(data.result==="0000"){
+				$scope.outNum=data.data.data.outNum;
+				$scope.inNum=data.data.data.inNum;
+				append();
+			}
+		}).error(function(data,header,config,status){
+			//处理响应失败
+			if(header=="404"){
+				alert("服务器错误，请联系管理员！")
+			}
+	   });
+	 }
+	 //根据数据填充输入输出属性
+	function append() {
+		if(proId){
+			$http({
+				url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/findById?id="+proId,
+				cache:false,
+				async:false,
+				method: "GET",
+				headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+			}
+		).success(function(data){
+			if(data.result==="0000"){
+				$scope.dateMap=data.data.data.dataMap;
+				outConfigArr=data.data.data.outConfig.split("|");
+				inConfigArr = data.data.data.inConfig.split("|");
+				for (let index = 0; index < $scope.inNum; index++) {
+					if (inConfigArr[index]) {
+							jQuery(".inConfigContainer").append('<input style="width:100px;margin-right: 5px" value="'+inConfigArr[index]+'" class="inConfig" type="text" />');
+					}else if(frontOutConfigArr[index]){
+							jQuery(".inConfigContainer").append('<input style="width:100px;margin-right: 5px" value="'+frontOutConfigArr[index]+'" class="inConfig" type="text" />');
+					}
+					else{
+							jQuery(".inConfigContainer").append('<input style="width:100px;margin-right: 5px" value="" class="inConfig" type="text" />');
+					}
+				}
+				for (let index = 0; index < $scope.outNum; index++) {
+					if (outConfigArr[index]) {
+							jQuery(".outConfigContainer").append('<input style="width:100px;margin-right: 5px" value="'+outConfigArr[index]+'" class="outConfig" type="text" />');
+					}else{
+							jQuery(".outConfigContainer").append('<input style="width:100px;margin-right: 5px" value="" class="outConfig" type="text" />');
+					}
+				}
+				}
+			}).error(function(data,header,config,status){
+					//处理响应失败
+				if(header=="404"){
+					alert("服务器错误，请联系管理员！")
+				}
+			});
+		}else{
+			for (let index = 0; index < $scope.inNum; index++) {
+				if(frontOutConfigArr[index]){
+						jQuery(".inConfigContainer").append('<input style="width:100px;margin-right: 5px" value="'+frontOutConfigArr[index]+'" class="inConfig" type="text" />');
+				}else{
+					jQuery(".inConfigContainer").append('<input style="width:100px;margin-right: 5px" value="" class="inConfig" type="text" />');
+				}
+			}
+			for (let index = 0; index < $scope.outNum; index++) {
+				jQuery(".outConfigContainer").append('<input style="width:100px;margin-right: 5px" value="" class="outConfig" type="text" />');
+			}
+		}
 	}
 	//console.log(serviceId);
 	
@@ -214,6 +338,16 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
     };
 
     $scope.save = function() {
+		var inConfigStr="";
+		var outConfigStr="";
+		jQuery(".inConfig").each(function(){
+			inConfigStr+=jQuery(this).val()+"|";
+		})
+		jQuery(".outConfig").each(function(){
+			outConfigStr+=jQuery(this).val()+"|";
+		})
+		outConfigStr = outConfigStr.substr(0, outConfigStr.length - 1);  
+		inConfigStr = inConfigStr.substr(0, inConfigStr.length - 1);  
     	if(proId){		//编辑
     		$http({
     		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/updatePropertyConfig",
@@ -225,9 +359,9 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
     				  "dataMap": $scope.dateMap,
     				  "flowId": "string",
     				  "id": proId,
-    				  "inConfig": $scope.inConfigArr,
+    				  "inConfig": inConfigStr,
     				  "modelId": "string",
-    				  "outConfig": $scope.outConfigArr,
+    				  "outConfig": outConfigStr,
     				  "serId": serviceId,
     				  "taskId": "string"
     				},
@@ -251,9 +385,9 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
     			data:{
     				  "dateMap": $scope.dateMap,
     				  "flowId": "string",
-    				  "inConfig": $scope.inConfigArr,
+    				  "inConfig": inConfigStr,
     				  "modelId": "string",
-    				  "outConfig": $scope.outConfigArr,
+    				  "outConfig": outConfigStr,
     				  "serId": serviceId,
     				  "taskId": "string"
     				},

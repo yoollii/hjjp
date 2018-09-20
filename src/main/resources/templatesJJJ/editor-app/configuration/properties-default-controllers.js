@@ -126,11 +126,15 @@ var KisBpmTextPropertyPopupCtrl = ['$scope','$http', function($scope,$http) {
 					headers : { 'Content-Type': 'application/json;charset=UTF-8' }
 						
 		           }
-	  	   ).
-	  	   success(function(data){
+	  	   ).success(function(data){
 	  		  console.log(data);
 	  		$scope.dataSet=data.data.data;
-	  	   })
+	  	   }).error(function(data,header,config,status){
+	  		    //处理响应失败
+	  		 if(header=="404"){
+  			   alert("服务器错误，请联系管理员！")
+  		   }
+	  	 });
 	
 	
 	

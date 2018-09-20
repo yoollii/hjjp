@@ -98,6 +98,7 @@ public class FlowModelController {
 			modelObjectNode.put("revision", 1);
 			description = StringUtils.defaultString(description);
 			modelObjectNode.put("description", description);
+			modelObjectNode.put("modType", 1);
 			// modelObjectNode.put("FormId", formId);
 			modelData.setMetaInfo(modelObjectNode.toString());
 			modelData.setName(name);
@@ -158,6 +159,133 @@ public class FlowModelController {
 			return new PublicResult<String>(PublicResultConstant.ERROR, e.getMessage());
 		}
 	}
+	
+	
+	@ApiOperation(value = "创建流程模型(创建后自动跳转)", notes = "所需参数：name(名字);key(关键字);description(描述);modelModelId(模型的id)")
+	@GetMapping(value = "create3")
+	public String create3(String name, String key, String description,String modelModelId, HttpServletRequest request,
+			HttpServletResponse response) throws MCHException {
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode editorNode = objectMapper.createObjectNode();
+			editorNode.put("id", "canvas");
+			editorNode.put("resourceId", "canvas");
+			ObjectNode stencilSetNode = objectMapper.createObjectNode();
+			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+			editorNode.put("stencilset", stencilSetNode);
+			//repositoryService.createModelQuery()
+			Model modelData = repositoryService.newModel();
+			ObjectNode modelObjectNode = objectMapper.createObjectNode();
+			modelObjectNode.put("name", name);
+			modelObjectNode.put("revision", 1);
+			description = StringUtils.defaultString(description);
+			modelObjectNode.put("description", description);
+			modelObjectNode.put("modType", 2);
+			// modelObjectNode.put("FormId", formId);
+			modelData.setMetaInfo(modelObjectNode.toString());
+			modelData.setName(name);
+			modelData.setKey(StringUtils.defaultString(key));
+			
+			
+			 // Model model = repositoryService.getModel("123456");
+			 //String resure = new String(repositoryService.getModelEditorSource(model.getId()), "utf-8");
+			 
+			// repositoryService.addModelEditorSource(model.getId(), json_xml.getBytes("utf-8"));
+			//repositoryService.getBpmnModel(processDefinitionId)
+
+			repositoryService.saveModel(modelData);
+			repositoryService.addModelEditorSource(modelData.getId(),repositoryService.getModelEditorSource(modelModelId));
+
+			// response.sendRedirect(
+			// request.getContextPath() + "modeler.html?modelId=" + modelData.getId() +
+			// "&key=" + key);
+			return "redirect:/modeler.html?modelId=" + modelData.getId() + "&key=" + key;
+
+		} catch (Exception e) {
+			throw new MCHException();
+		}
+	}
+	
+	
+	@ApiOperation(value =  "创建流程模型(前端手动加代码跳转)", notes = "所需参数：name(名字);key(关键字);description(描述);modelModelId(模型的id)")
+	@PostMapping(value = "create4")
+	@ResponseBody
+	public PublicResult<String> create4(
+			@kingwant.hjjp.annotation.ValidationParam("name,key") @RequestBody JSONObject requestJson)
+			throws MCHException {
+		try {
+			String name = requestJson.getString("name");
+			String key = requestJson.getString("key");
+			String description = requestJson.getString("description");
+			String modelModelId=requestJson.getString("modelModelId");
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode editorNode = objectMapper.createObjectNode();
+			editorNode.put("id", "canvas");
+			editorNode.put("resourceId", "canvas");
+			ObjectNode stencilSetNode = objectMapper.createObjectNode();
+			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+			editorNode.put("stencilset", stencilSetNode);
+			Model modelData = repositoryService.newModel();
+			ObjectNode modelObjectNode = objectMapper.createObjectNode();
+			modelObjectNode.put("name", name);
+			modelObjectNode.put("revision", 1);
+			description = StringUtils.defaultString(description);
+			modelObjectNode.put("description", description);
+			modelObjectNode.put("modType", 2);
+			modelData.setMetaInfo(modelObjectNode.toString());
+			modelData.setName(name);
+			modelData.setKey(StringUtils.defaultString(key));
+			repositoryService.saveModel(modelData);
+			repositoryService.addModelEditorSource(modelData.getId(),repositoryService.getModelEditorSource(modelModelId));
+
+			return new PublicResult<String>(PublicResultConstant.SUCCESS,
+					"/modeler.html?modelId=" + modelData.getId() + "&key=" + key);
+		} catch (Exception e) {
+			return new PublicResult<String>(PublicResultConstant.ERROR, e.getMessage());
+		}
+	}
+	
+	/*@ApiOperation(value = "创建流程模型(前端手动加代码跳转)", notes = "所需参数：name(名字);key(关键字);description(描述);modelModelId(模型的id)")
+	@GetMapping(value = "create4")
+	public PublicResult<String> create4(String name, String key, String description,String modelModelId, HttpServletRequest request,
+			HttpServletResponse response) throws MCHException {
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode editorNode = objectMapper.createObjectNode();
+			editorNode.put("id", "canvas");
+			editorNode.put("resourceId", "canvas");
+			ObjectNode stencilSetNode = objectMapper.createObjectNode();
+			stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+			editorNode.put("stencilset", stencilSetNode);
+			//repositoryService.createModelQuery()
+			Model modelData = repositoryService.newModel();
+			ObjectNode modelObjectNode = objectMapper.createObjectNode();
+			modelObjectNode.put("name", name);
+			modelObjectNode.put("revision", 1);
+			description = StringUtils.defaultString(description);
+			modelObjectNode.put("description", description);
+			modelObjectNode.put("modType", 2);
+			// modelObjectNode.put("FormId", formId);
+			modelData.setMetaInfo(modelObjectNode.toString());
+			modelData.setName(name);
+			modelData.setKey(StringUtils.defaultString(key));
+			 // Model model = repositoryService.getModel("123456");
+			 //String resure = new String(repositoryService.getModelEditorSource(model.getId()), "utf-8");
+			// repositoryService.addModelEditorSource(model.getId(), json_xml.getBytes("utf-8"));
+			//repositoryService.getBpmnModel(processDefinitionId)
+			repositoryService.saveModel(modelData);
+			repositoryService.addModelEditorSource(modelData.getId(),repositoryService.getModelEditorSource(modelModelId));
+			// response.sendRedirect(
+			// request.getContextPath() + "modeler.html?modelId=" + modelData.getId() +
+			// "&key=" + key);
+//			return "redirect:/modeler.html?modelId=" + modelData.getId() + "&key=" + key;
+			return new PublicResult<String>(PublicResultConstant.SUCCESS,
+					"/modeler.html?modelId=" + modelData.getId() + "&key=" + key);
+
+		} catch (Exception e) {
+			return new PublicResult<String>(PublicResultConstant.ERROR, e.getMessage());
+		}
+	}*/
 
 	@ApiOperation(value = "编辑流程模型", notes = "所需参数：modelId(模型的id);key(关键字)")
 	@RequestMapping(value = "editModel")
@@ -180,7 +308,7 @@ public class FlowModelController {
 		}
 	}
 
-	@ApiOperation(value = "编辑流程模型", notes = "所需参数：modelId(模型的id)")
+	@ApiOperation(value = "删除流程模型", notes = "所需参数：modelId(模型的id)")
 	@DeleteMapping(value = "delModel/{modelId}")
 	@ResponseBody
 	public PublicResult<Map<String, Object>> delModel(@PathVariable String modelId) throws MCHException {
