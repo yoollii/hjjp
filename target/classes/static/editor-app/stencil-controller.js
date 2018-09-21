@@ -590,8 +590,11 @@ angular.module('activitiModeler')
 
         /* Click handler for clicking a property */
           $scope.propertyClicked = function (index) {
-        	  
-      	 console.log($scope.selectedItem.properties);
+              
+
+        //  var allList=$scope.editor.getJSON().childShapes;
+        //  console.log($scope.selectedShape.resourceId);
+      	//  console.log($scope.selectedItem.properties);
 //        	 alert( document.getElementById("key").value);
         	// key oryx-fieldpower index==18
         	  

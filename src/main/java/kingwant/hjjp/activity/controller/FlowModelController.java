@@ -141,6 +141,7 @@ public class FlowModelController {
 			modelObjectNode.put("revision", 1);
 			description = StringUtils.defaultString(description);
 			modelObjectNode.put("description", description);
+			modelObjectNode.put("modType", 1);
 			// modelObjectNode.put("FormId", formId);
 			modelData.setMetaInfo(modelObjectNode.toString());
 			modelData.setName(name);

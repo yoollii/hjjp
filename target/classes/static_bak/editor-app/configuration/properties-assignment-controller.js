@@ -58,9 +58,71 @@ var KisBpmAssignmentCtrl = [ '$scope', '$modal', function($scope, $modal) {
 
 
 var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {	
+	var proId="";	// 属性Id
+	if($scope.selectedItem.properties[3].value){
+		if($scope.selectedItem.properties[3].value.assignment.candidateGroups){
+			proId=$scope.selectedItem.properties[3].value.assignment.candidateGroups[0].value;
+		};
+	}
+	
+	var serviceId=$scope.selectedItem.properties[2].value;	//服务id
+/*	if($scope.selectedItem.properties[5].value!=""){
+		var propertyId=$scope.selectedItem.properties[5].value.assignment.candidateGroups[0].value;
+	}*/
+//	if(proId){
+//		$http({
+//		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/findList",
+//			// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+//			cache:false,
+//			async:false,
+//			method: "POST",
+//			data:{'serId':serviceId},
+//			headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+//	       }
+//	   ).success(function(data){
+//		   if(data.result==="0000"){
+//			   $scope.dateMap=data.data.data[0].dataMap;
+//				  $scope.outConfigArr=data.data.data[0].outConfig;
+//				  $scope.inConfigArr = data.data.data[0].inConfig;
+//				  proId= data.data.data[0].id;
+//				  $scope.assignment.candidateGroups = [{value: data.data.data[0].id }];
+//				  debugger
+//				  flag=false;
+//		   }
+//	   }).error(function(data,header,config,status){
+//		    //处理响应失败
+//		   if(header=="404"){
+//			   alert("服务器错误，请联系管理员！")
+//		   }
+//	   });
+//	}
+		
+	if(proId){
+		$http({
+		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/findById?id="+proId,
+			// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+			cache:false,
+			async:false,
+			method: "GET",
+			headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+	       }
+	   ).success(function(data){
+		   if(data.result==="0000"){
+			   $scope.dateMap=data.data.data.dataMap;
+			   $scope.outConfigArr=data.data.data.outConfig;
+			   $scope.inConfigArr = data.data.data.inConfig;
+		   }
+	   }).error(function(data,header,config,status){
+		    //处理响应失败
+		   if(header=="404"){
+			   alert("服务器错误，请联系管理员！")
+		   }
+	   });
+	}
+	//console.log(serviceId);
 	
 	//$scope.aa="";
-	$scope.xxx=function(){
+	/*$scope.xxx=function(){
 		var index = layer.open({
 			type:2,
 			title: '预选操作团队或者操作者',
@@ -101,7 +163,7 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
 				jQuery("#layui-layer-iframe"+layer.index).contents().find("#forDate").val(labeStr);	
 			}
 		});
-	}
+	}*/
 
 	
 	
@@ -152,10 +214,65 @@ var KisBpmAssignmentPopupCtrl = [ '$scope',"$http", function($scope,$http) {
     };
 
     $scope.save = function() {
-
-        $scope.property.value = {};
-        handleAssignmentInput($scope);
-        $scope.property.value.assignment = $scope.assignment;
+    	if(proId){		//编辑
+    		$http({
+    		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/updatePropertyConfig",
+    			// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+    			cache:false,
+    			async:false,
+    			method: 'PUT',
+    			data:{
+    				  "dataMap": $scope.dateMap,
+    				  "flowId": "string",
+    				  "id": proId,
+    				  "inConfig": $scope.inConfigArr,
+    				  "modelId": "string",
+    				  "outConfig": $scope.outConfigArr,
+    				  "serId": serviceId,
+    				  "taskId": "string"
+    				},
+    			headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+    	       }
+    	   ).success(function(data){
+    		  console.log(data);
+    	   }).error(function(data,header,config,status){
+    		    //处理响应失败
+    		   if(header=="404"){
+    			   alert("服务器错误，请联系管理员！")
+    		   }
+    	   });
+    	}else{	//新增
+    		$http({
+    		    url: "http://hjj.ngrok.michaelch.xyz/propertyconfig/addProperty",
+    			// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+    			cache:false,
+    			async:false,
+    			method: 'POST',
+    			data:{
+    				  "dateMap": $scope.dateMap,
+    				  "flowId": "string",
+    				  "inConfig": $scope.inConfigArr,
+    				  "modelId": "string",
+    				  "outConfig": $scope.outConfigArr,
+    				  "serId": serviceId,
+    				  "taskId": "string"
+    				},
+    			headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+    	       }
+    	   ).success(function(data){
+    		  proId=data.data.data;
+			  $scope.assignment.candidateGroups = [{value: proId }];
+    	   }).error(function(data,header,config,status){
+    		    //处理响应失败
+    		   if(header=="404"){
+    			   alert("服务器错误，请联系管理员！")
+    		   }
+    	   });
+    	}
+    	
+    	 $scope.property.value = {};
+         handleAssignmentInput($scope);
+         $scope.property.value.assignment = $scope.assignment;
         $scope.updatePropertyInModel($scope.property);
         $scope.close();
     };

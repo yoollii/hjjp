@@ -5,9 +5,24 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
 			    <h3>{{'PROPERTY.PROPERTY.EDIT.TITLE' | translate:property}}</h3>
+			  
 			</div>
 			<div class="modal-body">
-				<p><textarea auto-focus class="form-control" ng-model="property.value" style="width:70%; height:100%; max-width: 100%; max-height: 100%; min-height: 200px"/></p>
+				<p style='display:none'><textarea auto-focus class="form-control" ng-model="property.value" style="width:70%; height:100%; max-width: 100%; max-height: 100%; min-height: 200px"/></p>
+			  <table style='border-collapse: collapse;width: 100%;'>
+			   <tr style='line-height:30px;'>
+			   <th style='border:1px solid #ddd;text-align:center;'></th>
+			   <th style='border:1px solid #ddd;text-align:center;'>服务名称</th>
+			   <th style='border:1px solid #ddd;text-align:center;'>状态</th>
+			   <th style='border:1px solid #ddd;text-align:center;'>服务描述</th>
+			   </tr>
+			    <tr style='line-height:30px;' ng-repeat="item in dataSet">
+			    <td style='border:1px solid #ddd;text-align:center;'><input name='radio' type="radio"  ng-value="item.id"  ng-model='$parent.property.value'></td>
+			   <td style='border:1px solid #ddd;text-align:center;'>{{item.name}}</td>
+			   <td style='border:1px solid #ddd;text-align:center;'>{{item.state}}</td>
+			   <td style='border:1px solid #ddd;text-align:center;'>{{item.des}}</td>
+			    <tr>
+			  </table>
 			</div>
 			<div class="modal-footer">
 				<button ng-click="save()" class="btn btn-primary" translate >ACTION.SAVE</button>
@@ -15,3 +30,24 @@
 		</div>
 	</div>
 </div>
+<!-- <script type="text/javascript"
+		src="../../../../static/js/plugins/jquery-1.10.2.js"></script>
+<script>
+
+   $.ajax(
+  		  {
+  			    url: "http://hjj.ngrok.michaelch.xyz/ser/findList",
+				// url:"model/test?processId="+processId+"&tableCode="+formkey+"&taskKey="+taskid+"&formData="+jQuery("iframe").contents().find("#fieldmap").serialize(),
+				cache:false,
+				async:false,
+				method: "POST",
+				data:'{}',
+				headers : { 'Content-Type': 'application/json;charset=UTF-8' }
+					
+	           }
+  	   ).
+  	   success(function(data){
+  		  console.log(data);
+  	   })
+
+</script> -->
