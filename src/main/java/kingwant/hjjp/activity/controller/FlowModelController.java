@@ -672,7 +672,6 @@ public class FlowModelController {
 			// 流程KEY
 			String key = modelData.getKey();
 			// 读取model
-
 			// ObjectNode modelNode;
 			// modelNode = (ObjectNode) new ObjectMapper()
 			// .readTree(repositoryService.getModelEditorSource(modelData.getId()));
@@ -683,11 +682,9 @@ public class FlowModelController {
 			// JSONArray[] chards= //JSON.parseArray(modelNode.childShapes)
 			// 获取全部子流程的用户节点，然后读取数据，拼装
 			List<JSONObject> usertasks = new ArrayList<JSONObject>();
-
 			String jsontext = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()))
 					.toString();
 			JSONObject jsonObject = JSONObject.parseObject(jsontext);
-
 			JSONArray jsonArrs = jsonObject.getJSONArray("childShapes");
 			for (int i = 0; i < jsonArrs.size(); i++) {
 				JSONObject chart = jsonArrs.getJSONObject(i);
@@ -696,13 +693,12 @@ public class FlowModelController {
 					JSONArray Arrs = chart.getJSONArray("childShapes");
 					for (int j = 0; j < Arrs.size(); j++) {
 						JSONObject ustasks = Arrs.getJSONObject(j);
-						if ("UserTask".equals(ustasks.getJSONObject("stencil").get("id"))) {
+						if ("ServiceTask".equals(ustasks.getJSONObject("stencil").get("id"))) {
 							usertasks.add(ustasks);
 						}
 					}
 				}
 			}
-
 			/////////////////////////////////////////////////
 			// 生成新的model
 			BpmnModel newModel = new BpmnModel();
@@ -729,7 +725,6 @@ public class FlowModelController {
 					// String id = UUID.randomUUID().toString().replaceAll("-", "");
 					task.setId("utask" + i);
 				}
-
 				task.setName(chart.get("name").toString());
 				task.setDocumentation(chart.get("documentation").toString());
 				tasks.add(task);
@@ -740,7 +735,6 @@ public class FlowModelController {
 			// 连线信息
 			List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
 			for (int i = 0; i < tasks.size(); i++) {
-
 				SequenceFlow s1 = new SequenceFlow();
 				// String id = UUID.randomUUID().toString().replaceAll("-", "");
 				s1.setId("line" + i);
@@ -753,7 +747,6 @@ public class FlowModelController {
 					s1.setSourceRef(tasks.get((i - 1)).getId());
 					s1.setTargetRef(tasks.get(i).getId());
 				}
-
 				if (i == (tasks.size() - 1)) {
 					SequenceFlow send = new SequenceFlow();
 					// String endid = UUID.randomUUID().toString().replaceAll("-", "");
@@ -762,7 +755,6 @@ public class FlowModelController {
 					send.setTargetRef("end");
 					sequenceFlows.add(send);
 				}
-
 				sequenceFlows.add(s1);
 			}
 			// Process对象
@@ -798,7 +790,6 @@ public class FlowModelController {
 			// Deployment deployment = db.addString(modelData.getName() + ".bpmn20.xml", new
 			// String(bpmnBytes, "utf-8"))
 			// .deploy();
-
 			logger.debug("部署名称1:" + deployment.getId());
 			// 判断是否部署成功
 			if (deployment != null && deployment.getId() != null) {
@@ -806,7 +797,6 @@ public class FlowModelController {
 				logger.debug("部署名称2:" + deployment.getId());
 				ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
 						.processDefinitionKey(key).active().singleResult();
-
 				// 激活特定定义
 				// repositoryService.activateProcessDefinitionById(processDefinitionId);
 			}
