@@ -113,7 +113,11 @@ public enum PublicResultConstant {
     /**
      * 操作数据库失败
      */
-    SQL_EXCEPTION("5009","操作数据库失败")
+    SQL_EXCEPTION("5009","操作数据库失败"),
+    /**
+     * 不已存在当前角色用户关系
+     */
+    NO_MUST_SERVICE("5011","操作失败,流程文件不符合规范,缺少必要服务"),
     ;
     
     

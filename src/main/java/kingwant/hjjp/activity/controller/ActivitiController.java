@@ -1,5 +1,4 @@
 package kingwant.hjjp.activity.controller;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,9 +11,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
@@ -22,36 +23,41 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import kingwant.hjjp.base.PublicResult;
 import kingwant.hjjp.base.PublicResultConstant;
-import kingwant.hjjp.entity.User;
+import kingwant.hjjp.entity.SubmitTask;
+import kingwant.hjjp.service.ACTFormService;
 import kingwant.hjjp.service.ACTTaskService;
 import kingwant.hjjp.util.KwHelper;
 import kingwant.hjjp.util.Page;
 import kingwant.hjjp.util.PageUtil;
-import xyz.michaelch.mchtools.hepler.BeanHelper;
+import xyz.michaelch.mchtools.MCHException;
 
 @Api(tags = "流程activiti接口")
 @RestController
@@ -71,11 +77,13 @@ public class ActivitiController {
 	HistoryService historyService;
 	@Autowired
 	ACTTaskService actTaskService;
+	@Autowired
+	ACTFormService actFormService;
 
 	private static Logger logger = Logger.getLogger(ActivitiController.class);
 
 	@ApiOperation(value = "获取流程定义列表", notes = "所需参数：processKey(过滤关键参数条件)")
-	@RequestMapping("defList")
+	@GetMapping("defList")
 	public PublicResult<Map<String, Object>> defList(HttpServletRequest request, Model model ) {
 
 		String processKey = request.getParameter("processKey");
@@ -116,34 +124,42 @@ public class ActivitiController {
 
 	//版本列表
 	@ApiOperation(value = "根据key获取版本列表", notes = "所需参数：key(必要查询条件)")
-	@RequestMapping("verList")
-	public PublicResult<Map<String, Object>> verList(@RequestParam(value = "key") String key, HttpServletRequest request, Model model) {
-		List<Object[]> objects = new ArrayList<Object[]>();
-		Page<Object[]> page = new Page<Object[]>(PageUtil.PAGE_SIZE);
-		int[] pageParams = PageUtil.init(page, request);
-		ProcessDefinitionQuery processDefinitionQuery1 = repositoryService.createProcessDefinitionQuery()
-				.orderByDeploymentId().desc();
-		List<ProcessDefinition> processDefinitionList1 = processDefinitionQuery1.processDefinitionKey(key)
-				.listPage(pageParams[0], pageParams[1]);
-		for (ProcessDefinition processDefinition : processDefinitionList1) {
-			String deploymentId = processDefinition.getDeploymentId();
-			Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-			objects.add(new Object[] { processDefinition, deployment });
-		}
-
-		ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
-				.orderByProcessDefinitionVersion().desc();
-		// long total = query.count();
-		page.setTotalCount(query.count());
-		page.setResult(objects);
-		model.addAttribute("List", page.getResult());
-		model.addAttribute("totalSize", page.getTotalCount());
-		model.addAttribute("totalPage", page.getTotalPages());
-		model.addAttribute("pageSize", page.getPageSize());
-		model.addAttribute("pageIndex", page.getPageNo());
-		
+	@PostMapping("verList")
+	public PublicResult<Map<String, Object>> verList(String key, HttpServletRequest request, Model model) {
+		List<Object[]> objects4result = new ArrayList<Object[]>();
+//		Page<Object[]> page = new Page<Object[]>(PageUtil.PAGE_SIZE);
+//		int[] pageParams = PageUtil.init(page, request);
+		JSONArray jsonArray=new JSONArray();
 		Map<String, Object> map=new HashMap<>();
-        map.put("data",  objects);
+		StringBuffer sb=new StringBuffer();
+		try {
+			ProcessDefinitionQuery processDefinitionQuery1 = repositoryService.createProcessDefinitionQuery()
+					.orderByDeploymentId().desc();
+			List<ProcessDefinition> processDefinitionList1 = processDefinitionQuery1.processDefinitionKey(key)
+					.listPage(0, 9999);
+			for (ProcessDefinition processDefinition : processDefinitionList1) {
+				String deploymentId = processDefinition.getDeploymentId();
+				Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+				objects4result.add(new Object[] { processDefinition, deployment });
+				JSONObject node = new JSONObject(); 
+				sb.append("{\\\"ProcessDefinitionEntity\\\":\\\""+processDefinition+"\\\",\\\"DeploymentEntity\\\":\\\""+deployment+"\\\"},");
+//				node.put("ProcessDefinitionEntity", processDefinition);
+//				node.put("DeploymentEntity", deployment);
+//				System.err.println(node);
+//				sb.append(node.toString());
+			}
+
+			ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
+					.orderByProcessDefinitionVersion().desc();
+			// long total = query.count();
+			String rString= sb.toString().replaceAll("\\\\", "");
+	        map.put("data",rString.substring(0, rString.length()-1));
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+			 return new PublicResult<>(PublicResultConstant.ERROR, map);
+			// TODO: handle exception
+		}
         return new PublicResult<>(PublicResultConstant.SUCCESS, map);
 
 //		return "activiti/content";
@@ -211,7 +227,7 @@ public class ActivitiController {
 
 	//流程跑起来后跑到某一步的图
 	@ApiOperation(value = "获取流程起单图片(流程跑起来后跑到某一步的图)", notes = "所需参数：processInstanceId(流程id)")
-	@RequestMapping(value = "getActivitiImag")
+	@GetMapping(value = "getActivitiImag")
 	public void getActivitiImag(@RequestParam("processInstanceId") String processInstanceId, HttpServletRequest request,
 			HttpServletResponse response, Model model) throws IOException {
 		// 设置页面不缓存
@@ -276,26 +292,168 @@ public class ActivitiController {
 	}
 	
 	
+	@ApiOperation(value = "部署流程", notes = "所需参数：modelId(模型id)")
+	@GetMapping("deploy4")
+	public PublicResult<Map<String, Object>> deploy4(@RequestParam(value = "modelId") String modelId, HttpServletRequest request,
+			HttpServletResponse response) throws JsonProcessingException, IOException {
+		Map<String, Object> map4result=new HashMap<>();
+		try {
+			// 获取流程中的表单信息
+			// 流程model
+			org.activiti.engine.repository.Model modelData = repositoryService.createModelQuery().modelId(modelId).singleResult();
+			// 流程KEY
+			String key = modelData.getKey();
+			// 读取model
+			// ObjectNode modelNode;
+			// modelNode = (ObjectNode) new ObjectMapper()
+			// .readTree(repositoryService.getModelEditorSource(modelData.getId()));
+			// ObjectNode processs = (ObjectNode) modelNode.findValue("properties");
+			// processs.put("process_id", key);
+			////////////////////////////////////////
+			/////////////////////////////////////////
+			// JSONArray[] chards= //JSON.parseArray(modelNode.childShapes)
+			// 获取全部子流程的用户节点，然后读取数据，拼装
+			List<JSONObject> usertasks = new ArrayList<JSONObject>();
+			String jsontext = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()))
+					.toString();
+			JSONObject jsonObject = JSONObject.parseObject(jsontext);
+			JSONArray jsonArrs = jsonObject.getJSONArray("childShapes");
+			for (int i = 0; i < jsonArrs.size(); i++) {
+				JSONObject chart = jsonArrs.getJSONObject(i);
+				// chart.get("stencil")
+				if ("SubProcess".equals(chart.getJSONObject("stencil").get("id"))) {
+					JSONArray Arrs = chart.getJSONArray("childShapes");
+					for (int j = 0; j < Arrs.size(); j++) {
+						JSONObject ustasks = Arrs.getJSONObject(j);
+						if ("ServiceTask".equals(ustasks.getJSONObject("stencil").get("id"))) {
+							usertasks.add(ustasks);
+						}
+					}
+				}
+			}
+			/////////////////////////////////////////////////
+			// 生成新的model
+			BpmnModel newModel = new BpmnModel();
+			Process process = new Process();
+			// newModel.addProcess(process);
+			process.setId(key);
+			// 开始节点的属性
+			StartEvent startEvent = new StartEvent();
+			startEvent.setId("start");
+			startEvent.setName("开始");
+			// 结束节点属性
+			EndEvent endEvent = new EndEvent();
+			endEvent.setId("end");
+			endEvent.setName("结束");
+			// 用户任务
+			// documentation overrideid //name
+			List<UserTask> tasks = new ArrayList<UserTask>();
+			for (int i = 0; i < usertasks.size(); i++) {
+				JSONObject chart = usertasks.get(i).getJSONObject("properties");
+				UserTask task = new UserTask();
+				if (chart.get("overrideid") != null && "".equals(chart.get("overrideid"))) {
+					task.setId(chart.get("overrideid").toString());
+				} else {
+					// String id = UUID.randomUUID().toString().replaceAll("-", "");
+					task.setId("utask" + i);
+				}
+				task.setName(chart.get("name").toString());
+				task.setDocumentation(chart.get("documentation").toString());
+				tasks.add(task);
+			}
+			if (tasks.isEmpty()) {
+				return new PublicResult<Map<String, Object>>(PublicResultConstant.NO_MUST_SERVICE, null);
+//				return   BeanHelper.getMsgJson("操作失败,流程文件不符合规范,缺少必要服务", false);
+			}
+			// 连线信息
+			List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
+			for (int  i = 0; i < tasks.size(); i++) {
+				SequenceFlow s1 = new SequenceFlow();
+				// String id = UUID.randomUUID().toString().replaceAll("-", "");
+				s1.setId("line" + i);
+				// s1.setName("");
+				if (i == 0) {
+					s1.setSourceRef("start");
+					s1.setTargetRef(tasks.get(i).getId());
+				} else {
+					// System.out.println(tasks.get((i-1)).getId());
+					s1.setSourceRef(tasks.get((i - 1)).getId());
+					s1.setTargetRef(tasks.get(i).getId());
+				}
+				if (i == (tasks.size() - 1)) {
+					SequenceFlow send = new SequenceFlow();
+					// String endid = UUID.randomUUID().toString().replaceAll("-", "");
+					send.setId("endline" + i);
+					send.setSourceRef(tasks.get(i).getId());
+					send.setTargetRef("end");
+					sequenceFlows.add(send);
+				}
+				sequenceFlows.add(s1);
+			}
+			// Process对象
+			process.addFlowElement(startEvent);
+			for (int i = 0; i < tasks.size(); i++) {
+				process.addFlowElement(tasks.get(i));
+			}
+			for (int i = 0; i < sequenceFlows.size(); i++) {
+				process.addFlowElement(sequenceFlows.get(i));
+			}
+			process.addFlowElement(endEvent);
+			newModel.addProcess(process);
+			///////////////////////////////////////////////////
+			// byte[] bpmnBytes = null;
+			//
+			// BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+			// bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+			// DeploymentBuilder db =
+			// repositoryService.createDeployment().name(modelData.getName());
+			// 停用前面的流程
+			List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery()
+					.processDefinitionKey(key).list();
+			// 挂起全部定义
+			for (ProcessDefinition Def : definitions) {
+				if (!Def.isSuspended()) {
+					repositoryService.suspendProcessDefinitionById(Def.getId());
+				}
+			}
+			// repositoryService.suspendProcessDefinitionByKey(key);
+			// 3. 部署这个BPMN模型
+			Deployment deployment = repositoryService.createDeployment().addBpmnModel("dynamic-model.bpmn", newModel)
+					.name("Dynamic process deployment").deploy();
+			// Deployment deployment = db.addString(modelData.getName() + ".bpmn20.xml", new
+			// String(bpmnBytes, "utf-8"))
+			// .deploy();
+			logger.debug("部署名称1:" + deployment.getId());
+			// 判断是否部署成功
+			if (deployment != null && deployment.getId() != null) {
+				// 挂起全部定义
+				logger.debug("部署名称2:" + deployment.getId());
+				ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
+						.processDefinitionKey(key).active().singleResult();
+				// 激活特定定义
+				// repositoryService.activateProcessDefinitionById(processDefinitionId);
+			}
+			
+			map4result.put("date", deployment);
+		} catch (Exception e) {
+			return new PublicResult<Map<String, Object>>(PublicResultConstant.NO_MUST_SERVICE, null);
+//			json = BeanHelper.getMsgJson("操作失败,流程文件不符合规范", false);
+			// TODO: handle exception
+		}
+		// model1.addAttribute("json", json);
+		return new PublicResult<Map<String, Object>>(PublicResultConstant.SUCCESS, map4result);
+	}
+	
 //	@RequestMapping("startActivitiOfParm")
-//	public String startActivitiOfParm(@RequestParam("processDefId") String processDefId, @RequestParam("dataParm") String dataParm,HttpServletRequest request,
+//	public String startActivitiOfParm(@RequestParam("processDefId") String processDefId, HttpServletRequest request,
 //			Model model) throws Exception {
-//		Subject subject = SecurityUtils.getSubject();
-//		KwUser user = (KwUser) subject.getPrincipal();
 //
-//		Map<String, String>maps=(Map<String, String>) JSON.parse(dataParm);
 //		ProcessInstance processInstance =null;
-//		if(maps.isEmpty()){
-//			processInstance = actFormService.startForm(processDefId, user.getUsername());
-//		}else{
-//			processInstance = actFormService.startFormOfParm(processDefId, user.getUsername(),maps);
-//		}
-//		
+//		processInstance = actFormService.startForm(processDefId);
 //		if (processInstance != null) {
-//
 //			String formCode = processInstance.getProcessDefinitionKey();
 //			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
 //					.processDefinitionId(processDefId).singleResult();
-//
 //			int processver = definition.getVersion();
 //
 //			List<TaskFieldPoint> points = pointService.seleteFFPByKeyAndVer(formCode, processver);
@@ -384,25 +542,30 @@ public class ActivitiController {
 	 * @throws Exception
 	 *             String
 	 */
-//	@RequestMapping("startACT")
-//	public String startActiviti(@RequestParam("processDefId") String processDefId, HttpServletRequest request,
-//			Model model) throws Exception {
-//		String jsons = "{}";
-//		Subject subject = SecurityUtils.getSubject();
-//		KwUser user = (KwUser) subject.getPrincipal();
-//		// String useraName = "useraName";
-//
-//		ProcessInstance processInstance = actFormService.startForm(processDefId, user.getUsername());
-//
-//		// 这里需要五个或者六个参数
-//		if (processInstance != null) {
-//
-//			String formCode = processInstance.getProcessDefinitionKey();
-//			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
-//					.processDefinitionId(processDefId).singleResult();
-//
-//			int processver = definition.getVersion();
-//
+	@ApiOperation(value = "启动流程", notes = "所需参数：processDefId(模型流程的id)")
+	@GetMapping("startACT")
+	public PublicResult<Map<String, Object>> startActiviti(@RequestParam("processDefId")String processDefId, HttpServletRequest request,
+			Model model) throws Exception {
+		String jsons = "{}";
+		// String useraName = "useraName";
+		StringBuffer sb=new StringBuffer();
+		sb.append("{");
+
+		ProcessInstance processInstance = actFormService.startForm(processDefId);
+		Map<String, Object> map=new HashMap<>();
+
+		// 这里需要五个或者六个参数
+		if (processInstance != null) {
+
+			String formCode = processInstance.getProcessDefinitionKey();
+			sb.append("\"formCode\":"+formCode);
+			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
+					.processDefinitionId(processDefId).singleResult();
+//			sb.append(",\"definition\":"+definition);
+
+			int processver = definition.getVersion();
+			sb.append(",\"processver\":"+processver);
+
 //			List<TaskFieldPoint> points = pointService.seleteFFPByKeyAndVer(formCode, processver);
 //			if (points != null && points.size() > 0) {
 //				int fromVer = points.get(0).getFormVersion();
@@ -415,69 +578,75 @@ public class ActivitiController {
 //				model.addAttribute("fromVer", kwForm.getFormVer());
 //				// model.addAttribute("fromVer", 1);
 //			}
-//			// .get(0).getFormVersion();
-//
-//			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-//					.taskDefinitionKey(processInstance.getActivityId()).singleResult();
-//			// 当前执行任务的定义id/key
-//			String taskKey = processInstance.getActivityId();
-//			String ProcessInId = processInstance.getId();
-//			// 当前正在执行任务的id
-//			String taskId = task.getId();
-//			// 表名
-//			model.addAttribute("fomeCode", processInstance.getProcessDefinitionKey());
-//			// 表id
-//			model.addAttribute("id", processInstance.getBusinessKey());
-//			// 流程版本and节点权限版本
-//			model.addAttribute("procDefVer", definition.getVersion());
-//			// 用户任务key
-//			model.addAttribute("taskKey", taskKey);
-//			// 流程实例id
-//			model.addAttribute("processInId", processInstance.getId());
-//			// 当前任务实例id
-//			model.addAttribute("taskId", taskId);
-//			// 启动时下一步可能的任务id集合
-//			List<TaskDefinition> taskDefinitions = new ArrayList<TaskDefinition>();
-//			// 下一步可能的流程Code
-//			List<String> taskCodes = actTaskService.findNextUserTasks(taskId, formCode,
-//					processInstance.getBusinessKey());
-//			// 流程定义实例
-//			ProcessDefinitionEntity definitionsss = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-//					.getDeployedProcessDefinition(task.getProcessDefinitionId());
-//			Map<String, TaskDefinition> taskDefinitionsAll = definitionsss.getTaskDefinitions();
-//			for (String string : taskCodes) {
-//				taskDefinitions.add(taskDefinitionsAll.get(string));
-//			}
-//			model.addAttribute("processInId", ProcessInId);
-//			model.addAttribute("nextTask", taskDefinitions);
-//			model.addAttribute("userPower", true);
-//
-//			// 流程变量
-//			HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-//					.processInstanceId(processInstance.getId()).variableName("startUser").singleResult();
-//			String userName = "";
-//			if (historicVariableInstance != null && historicVariableInstance.getValue() != null) {
-//				userName = historicVariableInstance.getValue().toString();
-//			}
+			// .get(0).getFormVersion();
+
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
+					.taskDefinitionKey(processInstance.getActivityId()).singleResult();
+			// 当前执行任务的定义id/key
+			String taskKey = processInstance.getActivityId();
+			String ProcessInId = processInstance.getId();
+			// 当前正在执行任务的id
+			String taskId = task.getId();
+			// 表名
+			sb.append(",\"task\":"+task+",\"taskKey\":"+taskKey+",\"ProcessInId\":"+ProcessInId+",\"taskId\":"+taskId);
+			model.addAttribute("fomeCode", processInstance.getProcessDefinitionKey());
+			// 表id
+			model.addAttribute("id", processInstance.getBusinessKey());
+			// 流程版本and节点权限版本
+			model.addAttribute("procDefVer", definition.getVersion());
+			sb.append(",\"procDefVer\":"+definition.getVersion());
+			// 用户任务key
+			model.addAttribute("taskKey", taskKey);
+			// 流程实例id
+			model.addAttribute("processInId", processInstance.getId());
+			// 当前任务实例id
+			model.addAttribute("taskId", taskId);
+			// 启动时下一步可能的任务id集合
+			List<TaskDefinition> taskDefinitions = new ArrayList<TaskDefinition>();
+			// 下一步可能的流程Code
+			List<String> taskCodes = actTaskService.findNextUserTasks(taskId, formCode,
+					processInstance.getBusinessKey());
+			// 流程定义实例
+			ProcessDefinitionEntity definitionsss = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+					.getDeployedProcessDefinition(task.getProcessDefinitionId());
+			Map<String, TaskDefinition> taskDefinitionsAll = definitionsss.getTaskDefinitions();
+			sb.append(",\"taskDefinitions\":\"");
+			for (String string : taskCodes) {
+				taskDefinitions.add(taskDefinitionsAll.get(string));
+				sb.append(taskDefinitionsAll.get(string)+",");
+			}
+			sb.append("\"");
+			sb.append(",\"taskCodes\":"+taskCodes+"}");
+			model.addAttribute("processInId", ProcessInId);
+			model.addAttribute("nextTask", taskDefinitions);
+			model.addAttribute("userPower", true);
+
+			// 流程变量
+			HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(processInstance.getId()).variableName("startUser").singleResult();
+			String userName = "";
+			if (historicVariableInstance != null && historicVariableInstance.getValue() != null) {
+				userName = historicVariableInstance.getValue().toString();
+			}
 //			if (user != null && user.getUsername().equals(userName)) {
 //				model.addAttribute("interrupt", "enable");
 //			} else {
 //				model.addAttribute("interrupt", "unable");
 //			}
-//			// 当前待处理人
-//			List<Task> users = new ArrayList<Task>();
+			// 当前待处理人
+			List<Task> users = new ArrayList<Task>();
 //			task.setAssignee(user.getTruename());
-//			users.add(task);
-//			model.addAttribute("userList", users);
-//			
-//			String isPreemptive = definition.getDescription();
-//			model.addAttribute("isPreemptive", isPreemptive);
-//			return "activiti/instance/FormInstance";
-//		} else {
-//			throw new MCHException("任务创建失败,请稍后重试");
-//		}
-//
-//	}
+			users.add(task);
+			model.addAttribute("userList", users);
+			String isPreemptive = definition.getDescription();
+			model.addAttribute("isPreemptive", isPreemptive);
+			map.put("date", sb.toString());
+			return new PublicResult<Map<String, Object>>(PublicResultConstant.SUCCESS, map);
+		} else {
+			throw new MCHException("任务创建失败,请稍后重试");
+		}
+
+	}
 
 	/**
 	 * @Title: SaveTempform
@@ -523,101 +692,54 @@ public class ActivitiController {
 //	}
 
 	// @Transactional(rollbackFor={xyz.michaelch.mchtools.MCHException.class,Exception.class})
-//	@RequestMapping("submission")
-//	public String sumbit(SubmitTask subtask, String tempFormData, HttpServletRequest request, Model model)
-//			throws Exception {
-//		Subject subject = SecurityUtils.getSubject();
-//		KwUser user = (KwUser) subject.getPrincipal();
-//		String jsons = "{}";
-//		Task task = taskService.createTaskQuery().taskId(subtask.getTaskId()).singleResult();
-//		subtask.setTaskName(task.getName());
-//		// 跑动流程
-//		try {
-//			// 查询该节点的权限
-//			// 流程定义
-//			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
-//					.processDefinitionId(task.getProcessDefinitionId()).singleResult();
-//			Map<String, List<Integer>> powerMap = pointService.findFields(subtask.getFormCode(), subtask.getTaskId(),
-//					null, definition.getVersion());
-//			// 任务--》--》
-//			// actTaskService.submitTask(subtask);
-//			logger.debug(tempFormData);findNextUserTaskss
-//			Map<String, String> map = (Map<String, String>) json.parse(tempFormData);
-//			Set<String> set = map.keySet();
-//			Iterator<String> it = set.iterator();
-//			// 取的全部表单字段项
-//			List<FormToField> formToFields = formToFieldService.findFieldListByForm(subtask.getFormCode());
-//			// 获取全部值
-//			for (int i = 0; i < formToFields.size(); i++) {
-//				String fieldCode = formToFields.get(i).getFieldCode();
-//				// 是不是获必填项
-//				if (powerMap.get(fieldCode) != null && powerMap.get(fieldCode).contains(4)) {
-//					if (map.get(fieldCode) == null || "".equals(map.get(fieldCode))) {
-//						JsonBean jsonBean = new JsonBean();
-//						jsonBean.setMgasStr("操作失败！必填项未填");
-//						jsons = BeanHelper.getMsgJson(jsonBean, false);
-//						model.addAttribute("json", jsons);
-//						return "json";
-//					}
-//				}
-//				if (map.get(fieldCode) != null && !"".equals(map.get(fieldCode))) {
-//					if (map.get(fieldCode) != null && powerMap.get(fieldCode) != null
-//							&& (powerMap.get(fieldCode).contains(2) || powerMap.get(fieldCode).contains(4))) {
-//						maps.put(fieldCode, map.get(fieldCode));
-//					} else if (map.get(fieldCode) != null && powerMap.get(fieldCode) == null) {
-//						maps.put(fieldCode, map.get(fieldCode));
-//					}
-//				}
-//			}
-//			// 保存数据
-//			if ("1".equals(subtask.getFloag())) {
-//				if (!maps.isEmpty()) {
-//					dynamicTableService.updata(subtask.getFormCode(), subtask.getFormId(), maps);
-//					KwDraft draft = new KwDraft();
-//					draft.setObjCode(subtask.getFormCode());
-//					draft.setObjId(subtask.getFormId());
-//					draft.setOperator(user.getUsername());
-//					// 操作节点
-//					draft.setClassfy1(task.getTaskDefinitionKey());
-//					kwDraftDao.deleteByBean(draft);
-//				}
-//			} else {
-//				dynamicTableService.rejectUpdate(subtask.getFormCode(), subtask.getVersion(), subtask.getTaskId(),
-//						subtask.getFormId());
-//			}
-//
-//			String taskId = "";
-//			// 流程跑起来
-//			actTaskService.submitTask(subtask, request);
-//			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-//					.processInstanceBusinessKey(subtask.getFormId()).singleResult();
-//			List<Task> tasks = null;
-//			if (processInstance != null) {
-//				tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId())
-//						.processInstanceId(processInstance.getId()).list();
-//				taskId = tasks.get(0).getId();
-//			} else {
-//				HistoricProcessInstance processInstance2 = historyService.createHistoricProcessInstanceQuery()
-//						.processInstanceBusinessKey(subtask.getFormId()).singleResult();
-//				List<HistoricTaskInstance> taskInstances = historyService.createHistoricTaskInstanceQuery()
-//						.processInstanceId(processInstance2.getId()).list();
-//				taskId = taskInstances.get(0).getId();
-//			}
-//
+	@ApiOperation(value = "提交流程的某一步流程", notes = "所需参数：processDefId(模型流程的id)")
+	@GetMapping("submission")
+	public PublicResult<Map<String, Object>> sumbit(SubmitTask subtask,HttpServletRequest request, Model model)
+			throws Exception {
+		String jsons = "{}";
+		Task task = taskService.createTaskQuery().taskId(subtask.getTaskId()).singleResult();
+		subtask.setTaskName(task.getName());
+		StringBuffer sb=new StringBuffer();
+		// 跑动流程
+		try {
+			
+			ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
+					.processDefinitionId(task.getProcessDefinitionId()).singleResult();
+			String taskId = "";
+			// 流程跑起来
+			actTaskService.submitTask(subtask, request);
+			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+					.processInstanceBusinessKey(subtask.getFormId()).singleResult();
+			List<Task> tasks = null;
+			if (processInstance != null) {
+				tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId())
+						.processInstanceId(processInstance.getId()).list();
+				taskId = tasks.get(0).getId();
+			} else {
+				HistoricProcessInstance processInstance2 = historyService.createHistoricProcessInstanceQuery()
+						.processInstanceBusinessKey(subtask.getFormId()).singleResult();
+				List<HistoricTaskInstance> taskInstances = historyService.createHistoricTaskInstanceQuery()
+						.processInstanceId(processInstance2.getId()).list();
+				taskId = taskInstances.get(0).getId();
+			}
+
 //			JsonBean jsonBean = new JsonBean();
 //			jsonBean.setMgasStr("操作成功:");
 //			jsonBean.setNextId(taskId);
 //			jsons = BeanHelper.getMsgJson(jsonBean, true);
 //			model.addAttribute("json", jsons);
-//			return "json";
-//		} catch (Exception e) {
+			sb.append("{\"taskId\":"+taskId+"}");
+			Map<String, Object> map=new HashMap<>();
+			map.put("date", sb.toString());
+			return new PublicResult<Map<String, Object>>(PublicResultConstant.SUCCESS, map);
+		} catch (Exception e) {
 //			JsonBean jsonBean = new JsonBean();
 //			jsonBean.setMgasStr("操作失败:" + KwHelper.formatExceptionMsg(e.getMessage()));
 //			jsons = BeanHelper.getMsgJson(jsonBean, false);
 //			model.addAttribute("json", jsons);
-//			return "json";
-//		}
-//	}
+			return new PublicResult<Map<String, Object>>(PublicResultConstant.FAILED, null);
+		}
+	}
 
 //	@RequestMapping("findForm2")
 //	public String findForm2(HttpServletRequest request, Model model, @RequestParam("taskId") String retaskId,
@@ -1103,7 +1225,7 @@ public class ActivitiController {
 		return returnMap;
 	}
 
-	@RequestMapping("interrupt")
+	/*@RequestMapping("interrupt")
 	public String interrupt(@RequestParam("processInId") String processInId,User user, Model model) {
 		try {
 			// 当前的登陆用户
@@ -1134,7 +1256,7 @@ public class ActivitiController {
 		return "json";
 	}
 
-	@RequestMapping("signUpTask")   /* 签收 */
+	@RequestMapping("signUpTask")    签收 
 	public String  signUpTask(@RequestParam("taskId") String taskId,User user, Model mode){
 		String json = "{}";
 		try {
@@ -1164,7 +1286,7 @@ public class ActivitiController {
 			// TODO: handle exception
 		}
 		return "json";
-	}
+	}*/
 
 	
 	

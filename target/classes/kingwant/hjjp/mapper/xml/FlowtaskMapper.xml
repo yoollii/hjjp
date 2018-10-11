@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kingwant.hjjp.mapper.FlowtaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="kingwant.hjjp.entity.Flowtask">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="currentLink" property="currentLink" />
+        <result column="currentUser" property="currentUser" />
+        <result column="handleTime" property="handleTime" />
+        <result column="dealAppliSys" property="dealAppliSys" />
+        <result column="state" property="state" />
+        <result column="des" property="des" />
+        <result column="appliSysId" property="appliSysId" />
+        <result column="crtime" property="crtime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, type, currentLink, currentUser, handleTime, dealAppliSys, state, des, appliSysId
+    </sql>
+
+</mapper>

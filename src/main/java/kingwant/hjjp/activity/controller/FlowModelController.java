@@ -3,6 +3,7 @@ package kingwant.hjjp.activity.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -661,10 +662,11 @@ public class FlowModelController {
 	// return "";
 	// }
 
-	@ApiOperation(value = "部署流程", notes = "所需参数：modelId(模型id)")
-	@RequestMapping("deploy4")
-	public String deploy4(@RequestParam(value = "modelId") String modelId) throws JsonProcessingException, IOException {
-		String json = "{}";
+	/*@ApiOperation(value = "部署流程", notes = "所需参数：modelId(模型id)")
+	@GetMapping("deploy4")
+	public PublicResult<Map<String, Object>> deploy4(@RequestParam(value = "modelId") String modelId, HttpServletRequest request,
+			HttpServletResponse response) throws JsonProcessingException, IOException {
+		Map<String, Object> map4result=new HashMap<>();
 		try {
 			// 获取流程中的表单信息
 			// 流程model
@@ -730,11 +732,12 @@ public class FlowModelController {
 				tasks.add(task);
 			}
 			if (tasks.isEmpty()) {
-				return "操作失败,流程文件不符合规范,缺少必要服务";
+				return new PublicResult<Map<String, Object>>(PublicResultConstant.NO_MUST_SERVICE, null);
+//				return   BeanHelper.getMsgJson("操作失败,流程文件不符合规范,缺少必要服务", false);
 			}
 			// 连线信息
 			List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
-			for (int i = 0; i < tasks.size(); i++) {
+			for (int  i = 0; i < tasks.size(); i++) {
 				SequenceFlow s1 = new SequenceFlow();
 				// String id = UUID.randomUUID().toString().replaceAll("-", "");
 				s1.setId("line" + i);
@@ -800,13 +803,15 @@ public class FlowModelController {
 				// 激活特定定义
 				// repositoryService.activateProcessDefinitionById(processDefinitionId);
 			}
-			json = BeanHelper.getMsgJson("操作成功", true);
+			
+			map4result.put("date", deployment);
 		} catch (Exception e) {
-			json = BeanHelper.getMsgJson("操作失败,流程文件不符合规范", false);
+			return new PublicResult<Map<String, Object>>(PublicResultConstant.NO_MUST_SERVICE, null);
+//			json = BeanHelper.getMsgJson("操作失败,流程文件不符合规范", false);
 			// TODO: handle exception
 		}
 		// model1.addAttribute("json", json);
-		return "json";
-	}
+		return new PublicResult<Map<String, Object>>(PublicResultConstant.SUCCESS, map4result);
+	}*/
 
 }

@@ -2,9 +2,7 @@ package kingwant.hjjp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import com.baomidou.mybatisplus.activerecord.Model;
-import java.io.Serializable;
 
 /**
  * <p>
